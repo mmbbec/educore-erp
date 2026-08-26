@@ -376,16 +376,44 @@ Contact IT Support
 
 
 <script>
-
 <script>
 
 /****************************************************
- * EDUCORE ERP
- * STEP 36 - GITHUB LOGIN CONNECTED TO GOOGLE SHEET
+ * EDUCORE ERP - TEMPORARY DIRECT LOGIN
+ * Google Sheet / Apps Script will be connected later
  ****************************************************/
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbzPmWkPj_2OIXoW9Mbfip_DZG3Plst7qwzbur11ohTvRdY2qg0xU1Fsp5ifZbBUaXK7ow/exec";
+const users = [
+
+    {
+        email: "admin@example.com",
+        password: "Admin@123",
+        role: "Admin",
+        name: "System Administrator"
+    },
+
+    {
+        email: "faculty@example.com",
+        password: "Faculty@123",
+        role: "Faculty",
+        name: "Demo Faculty"
+    },
+
+    {
+        email: "student@example.com",
+        password: "Student@123",
+        role: "Student",
+        name: "Demo Student"
+    },
+
+    {
+        email: "parent@example.com",
+        password: "Parent@123",
+        role: "Parent",
+        name: "Demo Parent"
+    }
+
+];
 
 
 /****************************************************
@@ -469,10 +497,9 @@ document
 
 document
 .getElementById("loginForm")
-.addEventListener("submit", async function(event) {
+.addEventListener("submit", function(event) {
 
     event.preventDefault();
-
 
     const email =
         document
@@ -481,24 +508,10 @@ document
         .trim()
         .toLowerCase();
 
-
     const password =
         document
         .getElementById("password")
         .value;
-
-
-    const loginButton =
-        document.getElementById("loginButton");
-
-
-    const loginText =
-        document.getElementById("loginText");
-
-
-    /************************************************
-     * VALIDATION
-     ************************************************/
 
     if (!email || !password) {
 
@@ -513,221 +526,116 @@ document
 
 
     /************************************************
-     * BUTTON LOADING
+     * FIND USER
      ************************************************/
 
-    loginButton.disabled = true;
+    const user = users.find(function(u) {
 
-    loginText.textContent = "Checking account...";
-
-
-    try {
-
-        /********************************************
-         * CALL GOOGLE APPS SCRIPT
-         ********************************************/
-
-        const response = await fetch(API_URL, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-
-           body: JSON.stringify({
-
-    action: "login",
-
-    email: email,
-
-    password: password
-
-            })
-
-        });
-
-
-        /********************************************
-         * READ RESPONSE
-         ********************************************/
-
-        const result =
-            await response.json();
-
-
-        /********************************************
-         * LOGIN FAILED
-         ********************************************/
-
-        if (!result.success) {
-
-            showMessage(
-                result.error ||
-                "Login failed.",
-                false
-            );
-
-            resetLoginButton();
-
-            return;
-
-        }
-
-
-        /********************************************
-         * USER RECEIVED FROM GOOGLE SHEET
-         ********************************************/
-
-        const user =
-            result.user;
-
-
-        /********************************************
-         * CHECK ROLE
-         ********************************************/
-
-        const roleMap = {
-
-            "System Admin": "Admin",
-
-            "Admin": "Admin",
-
-            "Principal": "Principal",
-
-            "HOD": "HOD",
-
-            "Faculty": "Faculty",
-
-            "Student": "Student",
-
-            "Parent": "Parent",
-
-            "Accountant": "Accountant",
-
-            "Librarian": "Librarian",
-
-            "HR": "HR",
-
-            "Warden": "Warden",
-
-            "Transport Admin": "Transport Admin",
-
-            "Placement Officer":
-                "Placement Officer"
-
-        };
-
-
-        const actualRole =
-            roleMap[user.UserType] ||
-            user.UserType;
-
-
-        if (actualRole !== selectedRole) {
-
-            showMessage(
-
-                "Wrong role selected. Your account is registered as " +
-                actualRole + ".",
-
-                false
-
-            );
-
-            resetLoginButton();
-
-            return;
-
-        }
-
-
-        /********************************************
-         * SAVE USER SESSION
-         ********************************************/
-
-        sessionStorage.setItem(
-
-            "erpUser",
-
-            JSON.stringify(user)
-
+        return (
+            u.email.toLowerCase() === email &&
+            u.password === password
         );
 
-
-        /********************************************
-         * REMEMBER EMAIL
-         ********************************************/
-
-        if (
-            document
-            .getElementById("rememberMe")
-            .checked
-        ) {
-
-            localStorage.setItem(
-                "erpRememberEmail",
-                email
-            );
-
-        } else {
-
-            localStorage.removeItem(
-                "erpRememberEmail"
-            );
-
-        }
+    });
 
 
-        /********************************************
-         * LOGIN SUCCESS
-         ********************************************/
+    if (!user) {
 
         showMessage(
-
-            "Login successful. Opening dashboard...",
-
-            true
-
-        );
-
-
-        loginText.textContent =
-            "Opening Dashboard...";
-
-
-        /********************************************
-         * OPEN DASHBOARD
-         ********************************************/
-
-        setTimeout(function() {
-
-            redirectUser(actualRole);
-
-        }, 700);
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        showMessage(
-
-            "Unable to connect to ERP server. Please try again.",
-
+            "Invalid email or password.",
             false
-
         );
 
-        resetLoginButton();
+        return;
 
     }
+
+
+    /************************************************
+     * CHECK ROLE
+     ************************************************/
+
+    if (user.role !== selectedRole) {
+
+        showMessage(
+            "Please select the correct role.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    /************************************************
+     * SAVE SESSION
+     ************************************************/
+
+    const sessionUser = {
+
+        email: user.email,
+
+        name: user.name,
+
+        role: user.role
+
+    };
+
+    sessionStorage.setItem(
+        "erpUser",
+        JSON.stringify(sessionUser)
+    );
+
+
+    /************************************************
+     * REMEMBER EMAIL
+     ************************************************/
+
+    if (
+        document
+        .getElementById("rememberMe")
+        .checked
+    ) {
+
+        localStorage.setItem(
+            "erpRememberEmail",
+            email
+        );
+
+    } else {
+
+        localStorage.removeItem(
+            "erpRememberEmail"
+        );
+
+    }
+
+
+    /************************************************
+     * SUCCESS
+     ************************************************/
+
+    showMessage(
+        "Login successful. Opening dashboard...",
+        true
+    );
+
+
+    document.getElementById("loginText")
+        .textContent = "Opening Dashboard...";
+
+
+    setTimeout(function() {
+
+        redirectUser(user.role);
+
+    }, 500);
 
 });
 
 
 /****************************************************
- * REDIRECT USER
+ * REDIRECT
  ****************************************************/
 
 function redirectUser(role) {
@@ -737,12 +645,6 @@ function redirectUser(role) {
         "Admin":
             "admin-dashboard.html",
 
-        "Principal":
-            "principal-dashboard.html",
-
-        "HOD":
-            "hod-dashboard.html",
-
         "Faculty":
             "faculty-dashboard.html",
 
@@ -750,25 +652,7 @@ function redirectUser(role) {
             "student-dashboard.html",
 
         "Parent":
-            "parent-dashboard.html",
-
-        "Accountant":
-            "accountant-dashboard.html",
-
-        "Librarian":
-            "librarian-dashboard.html",
-
-        "HR":
-            "hr-dashboard.html",
-
-        "Warden":
-            "warden-dashboard.html",
-
-        "Transport Admin":
-            "transport-dashboard.html",
-
-        "Placement Officer":
-            "placement-dashboard.html"
+            "parent-dashboard.html"
 
     };
 
@@ -779,16 +663,9 @@ function redirectUser(role) {
     if (!page) {
 
         showMessage(
-
-            "Dashboard for " +
-            role +
-            " is not created yet.",
-
+            "Dashboard not found.",
             false
-
         );
-
-        resetLoginButton();
 
         return;
 
@@ -809,7 +686,6 @@ function showMessage(text, success) {
     const box =
         document.getElementById("message");
 
-
     box.classList.remove("hidden");
 
 
@@ -827,27 +703,6 @@ function showMessage(text, success) {
 
 
     box.textContent = text;
-
-}
-
-
-/****************************************************
- * RESET LOGIN BUTTON
- ****************************************************/
-
-function resetLoginButton() {
-
-    const loginButton =
-        document.getElementById("loginButton");
-
-    const loginText =
-        document.getElementById("loginText");
-
-
-    loginButton.disabled = false;
-
-    loginText.textContent =
-        "Login to Dashboard";
 
 }
 
@@ -908,7 +763,8 @@ window.addEventListener(
     }
 );
 
-<script>
+</script>
+
 
 /****************************************************
  * EDUCORE ERP
