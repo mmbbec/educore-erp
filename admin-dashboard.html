@@ -1,130 +1,132 @@
 /****************************************************
  * ADMIN DASHBOARD DATA
- * Reads students directly from STUDENTS sheet
+ * Aggregates Students, Faculty, Daily Attendance %, and Fees
  ****************************************************/
-
 function getAdminDashboardData() {
-
   try {
-
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
     const studentsSheet = ss.getSheetByName("STUDENTS");
     const facultySheet = ss.getSheetByName("FACULTY");
+    const attendanceSheet = ss.getSheetByName("ATTENDANCE");
+    const feesSheet = ss.getSheetByName("FEES");
 
     let students = 0;
     let faculty = 0;
+    let attendanceToday = 0;
+    let totalFeesCollected = 0;
 
     /************************************************
-     * STUDENTS
+     * 1. STUDENTS (Active or Unmarked)
      ************************************************/
-
-    if (studentsSheet) {
-
+    if (studentsSheet && studentsSheet.getLastRow() > 1) {
       const data = studentsSheet.getDataRange().getValues();
+      const headers = data[0];
+      const statusIndex = headers.indexOf("Status");
 
-      if (data.length > 1) {
+      for (let i = 1; i < data.length; i++) {
+        // Skip entirely blank rows
+        const hasContent = data[i].some(cell => String(cell).trim() !== "");
+        if (!hasContent) continue;
 
-        const headers = data[0];
-
-        const statusIndex = headers.indexOf("Status");
-
-        for (let i = 1; i < data.length; i++) {
-
-          // Ignore completely empty rows
-          if (
-            data[i].every(function(value) {
-              return String(value).trim() === "";
-            })
-          ) {
-            continue;
-          }
-
-          // If Status column exists
-          if (statusIndex !== -1) {
-
-            const status =
-              String(data[i][statusIndex])
-              .trim()
-              .toLowerCase();
-
-            if (
-              status === "active" ||
-              status === ""
-            ) {
-              students++;
-            }
-
-          } else {
-
-            // Count student if no Status column
+        if (statusIndex !== -1) {
+          const status = String(data[i][statusIndex] || "").trim().toLowerCase();
+          if (status === "active" || status === "") {
             students++;
-
           }
-
+        } else {
+          students++;
         }
-
       }
-
     }
 
+    /************************************************
+     * 2. FACULTY (Non-empty Faculty ID / First Column)
+     ************************************************/
+    if (facultySheet && facultySheet.getLastRow() > 1) {
+      const data = facultySheet.getDataRange().getValues();
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][0]).trim() !== "") {
+          faculty++;
+        }
+      }
+    }
 
     /************************************************
-     * FACULTY
+     * 3. ATTENDANCE (Today's % Present)
      ************************************************/
+    if (attendanceSheet && attendanceSheet.getLastRow() > 1) {
+      const data = attendanceSheet.getDataRange().getValues();
+      const headers = data[0];
+      const dateIndex = headers.indexOf("Date");
+      const statusIndex = headers.indexOf("Status");
 
-    if (facultySheet) {
-
-      const data = facultySheet.getDataRange().getValues();
-
-      if (data.length > 1) {
+      if (dateIndex !== -1 && statusIndex !== -1) {
+        let present = 0;
+        let total = 0;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         for (let i = 1; i < data.length; i++) {
+          if (!data[i][dateIndex]) continue;
+          
+          const recordDate = new Date(data[i][dateIndex]);
+          recordDate.setHours(0, 0, 0, 0);
 
-          if (
-            String(data[i][0]).trim() !== ""
-          ) {
-
-            faculty++;
-
+          if (recordDate.getTime() === today.getTime()) {
+            total++;
+            const status = String(data[i][statusIndex] || "").trim().toLowerCase();
+            if (status === "present" || status === "p") {
+              present++;
+            }
           }
-
         }
 
+        if (total > 0) {
+          attendanceToday = Number(((present / total) * 100).toFixed(1));
+        }
       }
-
     }
 
+    /************************************************
+     * 4. FEES (Sum of PaidAmount)
+     ************************************************/
+    if (feesSheet && feesSheet.getLastRow() > 1) {
+      const data = feesSheet.getDataRange().getValues();
+      const headers = data[0];
+      const paidIndex = headers.indexOf("PaidAmount");
+
+      if (paidIndex !== -1) {
+        for (let i = 1; i < data.length; i++) {
+          const val = Number(data[i][paidIndex]);
+          if (!isNaN(val)) {
+            totalFeesCollected += val;
+          }
+        }
+      }
+    }
 
     /************************************************
-     * RETURN
+     * RETURN PAYLOAD
      ************************************************/
-
     return {
-
       success: true,
-
       students: students,
-
       faculty: faculty,
-
-      attendance: 0,
-
-      fees: 0
-
+      attendance: attendanceToday,
+      fees: totalFeesCollected,
+      dashboard: {
+        totalStudents: students,
+        totalFaculty: faculty,
+        attendanceToday: attendanceToday,
+        paidFees: totalFeesCollected
+      }
     };
-
 
   } catch (error) {
-
     return {
-
       success: false,
-
-      error: error.toString()
-
+      error: error.message || error.toString()
     };
-
   }
-
 }
