@@ -1,1243 +1,555 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>EduCore ERP - Student Dashboard</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-rel="stylesheet">
-
-<link
-href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1"
-rel="stylesheet">
-
-<style>
-
-body {
-    font-family: Inter, sans-serif;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
-}
-
-.sidebar-item {
-    transition: 0.2s;
-}
-
-.sidebar-item:hover {
-    background: #eef2ff;
-    color: #4338ca;
-}
-
-.sidebar-active {
-    background: #eef2ff;
-    color: #4338ca;
-    font-weight: 600;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduCore ERP - Student Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; }
+    .sidebar-item { transition: 0.2s; }
+    .sidebar-item:hover { background: #eef2ff; color: #4338ca; }
+    .sidebar-active { background: #eef2ff; color: #4338ca; font-weight: 600; }
+  </style>
 </head>
-
 
 <body class="bg-slate-50 text-slate-800">
 
-
-<!-- MOBILE OVERLAY -->
-
-<div
-id="overlay"
-class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden">
-</div>
-
-
-
-<!-- SIDEBAR -->
-
-<aside
-id="sidebar"
-class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
-
-
-<!-- LOGO -->
-
-<div
-class="h-16 flex items-center px-5 border-b border-slate-200">
-
-<div
-class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-
-<span
-class="material-symbols-outlined text-indigo-600">
-
-school
-
-</span>
-
-</div>
-
-<div>
-
-<h1 class="font-bold text-lg">
-
-EduCore ERP
-
-</h1>
-
-<p class="text-xs text-slate-500">
-
-Student Portal
-
-</p>
-
-</div>
-
-</div>
-
-
-
-<!-- NAVIGATION -->
-
-<nav
-class="p-3 space-y-1 overflow-y-auto h-[calc(100vh-64px)]">
-
-
-<button
-class="sidebar-item sidebar-active w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-dashboard
-
-</span>
-
-Dashboard
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-person
-
-</span>
-
-My Profile
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-event_available
-
-</span>
-
-Attendance
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-menu_book
-
-</span>
-
-My Courses
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-assignment
-
-</span>
-
-Assignments
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-quiz
-
-</span>
-
-Examinations
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-grade
-
-</span>
-
-Results
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-library_books
-
-</span>
-
-Study Material
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-payments
-
-</span>
-
-Fees
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-schedule
-
-</span>
-
-Timetable
-
-</button>
-
-
-
-<button
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
-
-<span class="material-symbols-outlined mr-3">
-
-campaign
-
-</span>
-
-Notices
-
-</button>
-
-
-
-<div class="border-t border-slate-200 my-3">
-</div>
-
-
-
-<button
-onclick="logout()"
-class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm text-red-600">
-
-<span class="material-symbols-outlined mr-3">
-
-logout
-
-</span>
-
-Logout
-
-</button>
-
-
-</nav>
-
-</aside>
-
-
-
-<!-- MAIN -->
-
-<div class="lg:ml-64 min-h-screen">
-
-
-<!-- TOP BAR -->
-
-<header
-class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-20">
-
-
-<div class="flex items-center">
-
-
-<button
-id="menuButton"
-class="lg:hidden mr-3 text-slate-600">
-
-<span class="material-symbols-outlined">
-
-menu
-
-</span>
-
-</button>
-
-
-<div>
-
-<h2 class="font-bold text-lg">
-
-Student Dashboard
-
-</h2>
-
-<p class="text-xs text-slate-500 hidden sm:block">
-
-Academic & Student Portal
-
-</p>
-
-</div>
-
-</div>
-
-
-
-<div class="flex items-center gap-4">
-
-
-<button
-class="relative text-slate-500">
-
-<span class="material-symbols-outlined">
-
-notifications
-
-</span>
-
-<span
-class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full">
-</span>
-
-</button>
-
-
-
-<div class="flex items-center gap-2">
-
-<div
-class="w-9 h-9 bg-indigo-600 text-white rounded-full flex items-center justify-center font-semibold">
-
-S
-
-</div>
-
-
-<div class="hidden md:block">
-
-<p
-id="studentName"
-class="text-sm font-semibold">
-
-Student
-
-</p>
-
-<p class="text-xs text-slate-500">
-
-Student
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</header>
-
-
-
-<!-- CONTENT -->
-
-<main class="p-4 md:p-6">
-
-
-<!-- PROFILE / WELCOME -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5 mb-6">
-
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-
-<div class="flex items-center">
-
-<div
-class="w-16 h-16 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xl font-bold mr-4">
-
-S
-
-</div>
-
-
-<div>
-
-<h1 class="text-2xl font-bold">
-
-Welcome, Student
-
-</h1>
-
-<p class="text-slate-500">
-
-Computer Science & Engineering
-
-</p>
-
-<p class="text-sm text-slate-400">
-
-USN: 1XX22CS001
-
-</p>
-
-</div>
-
-</div>
-
-
-<div>
-
-<span
-class="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-
-Active Student
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- STAT CARDS -->
-
-<div
-class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-
-
-<!-- ATTENDANCE -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5">
-
-<div class="flex items-center justify-between">
-
-<div>
-
-<p class="text-sm text-slate-500">
-
-Attendance
-
-</p>
-
-<h3 class="text-3xl font-bold mt-2">
-
-91.8%
-
-</h3>
-
-<p class="text-xs text-green-600 mt-2">
-
-Good attendance
-
-</p>
-
-</div>
-
-<div
-class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-
-<span
-class="material-symbols-outlined text-green-600">
-
-event_available
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- CGPA -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5">
-
-<div class="flex items-center justify-between">
-
-<div>
-
-<p class="text-sm text-slate-500">
-
-Current CGPA
-
-</p>
-
-<h3 class="text-3xl font-bold mt-2">
-
-8.42
-
-</h3>
-
-<p class="text-xs text-indigo-600 mt-2">
-
-Semester performance
-
-</p>
-
-</div>
-
-<div
-class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-
-<span
-class="material-symbols-outlined text-indigo-600">
-
-grade
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- COURSES -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5">
-
-<div class="flex items-center justify-between">
-
-<div>
-
-<p class="text-sm text-slate-500">
-
-Courses
-
-</p>
-
-<h3 class="text-3xl font-bold mt-2">
-
-6
-
-</h3>
-
-<p class="text-xs text-blue-600 mt-2">
-
-Current semester
-
-</p>
-
-</div>
-
-<div
-class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-
-<span
-class="material-symbols-outlined text-blue-600">
-
-menu_book
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- ASSIGNMENTS -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5">
-
-<div class="flex items-center justify-between">
-
-<div>
-
-<p class="text-sm text-slate-500">
-
-Assignments
-
-</p>
-
-<h3 class="text-3xl font-bold mt-2">
-
-3
-
-</h3>
-
-<p class="text-xs text-amber-600 mt-2">
-
-Pending submission
-
-</p>
-
-</div>
-
-<div
-class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-
-<span
-class="material-symbols-outlined text-amber-600">
-
-assignment
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-<!-- MAIN GRID -->
-
-<div
-class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-
-<!-- TODAY -->
-
-<div
-class="xl:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
-
-
-<div class="flex items-center justify-between mb-5">
-
-<div>
-
-<h2 class="font-bold text-lg">
-
-Today's Classes
-
-</h2>
-
-<p class="text-sm text-slate-500">
-
-Wednesday, August 26, 2026
-
-</p>
-
-</div>
-
-
-<button
-class="text-sm text-indigo-600 font-semibold">
-
-View Timetable
-
-</button>
-
-</div>
-
-
-<div class="space-y-3">
-
-
-<div
-class="flex items-center p-4 rounded-lg bg-indigo-50 border border-indigo-100">
-
-<div
-class="w-11 h-11 bg-indigo-600 text-white rounded-lg flex items-center justify-center mr-4">
-
-<span class="material-symbols-outlined">
-
-menu_book
-
-</span>
-
-</div>
-
-<div class="flex-1">
-
-<p class="font-semibold">
-
-Engineering Mathematics-I
-
-</p>
-
-<p class="text-sm text-slate-500">
-
-09:00 AM • Room 201
-
-</p>
-
-</div>
-
-<span
-class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-
-Completed
-
-</span>
-
-</div>
-
-
-
-<div
-class="flex items-center p-4 rounded-lg border border-slate-200">
-
-<div
-class="w-11 h-11 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-4">
-
-<span class="material-symbols-outlined">
-
-menu_book
-
-</span>
-
-</div>
-
-<div class="flex-1">
-
-<p class="font-semibold">
-
-Data Structures
-
-</p>
-
-<p class="text-sm text-slate-500">
-
-11:00 AM • Room 305
-
-</p>
-
-</div>
-
-<span
-class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
-
-Upcoming
-
-</span>
-
-</div>
-
-
-
-<div
-class="flex items-center p-4 rounded-lg border border-slate-200">
-
-<div
-class="w-11 h-11 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mr-4">
-
-<span class="material-symbols-outlined">
-
-menu_book
-
-</span>
-
-</div>
-
-<div class="flex-1">
-
-<p class="font-semibold">
-
-Database Management System
-
-</p>
-
-<p class="text-sm text-slate-500">
-
-02:00 PM • Room 102
-
-</p>
-
-</div>
-
-<span
-class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">
-
-Upcoming
-
-</span>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<!-- ASSIGNMENTS -->
-
-<div
-class="bg-white rounded-xl border border-slate-200 p-5">
-
-
-<h2 class="font-bold text-lg">
-
-Upcoming Deadlines
-
-</h2>
-
-<p class="text-sm text-slate-500 mb-5">
-
-Assignments and academic tasks
-
-</p>
-
-
-<div class="space-y-4">
-
-
-<div class="border-l-4 border-red-500 pl-3">
-
-<p class="font-semibold text-sm">
-
-Mathematics Assignment
-
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-
-Differential Equations
-
-</p>
-
-<p class="text-xs text-red-500 mt-1">
-
-Due today
-
-</p>
-
-</div>
-
-
-
-<div class="border-l-4 border-amber-500 pl-3">
-
-<p class="font-semibold text-sm">
-
-Data Structures Lab
-
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-
-Lab Record Submission
-
-</p>
-
-<p class="text-xs text-amber-600 mt-1">
-
-Due tomorrow
-
-</p>
-
-</div>
-
-
-
-<div class="border-l-4 border-blue-500 pl-3">
-
-<p class="font-semibold text-sm">
-
-DBMS Assignment
-
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-
-SQL Queries
-
-</p>
-
-<p class="text-xs text-blue-600 mt-1">
-
-Due Aug 29
-
-</p>
-
-</div>
-
-
-</div>
-
-
-<button
-class="mt-5 text-sm font-semibold text-indigo-600">
-
-View all assignments →
-
-</button>
-
-</div>
-
-
-</div>
-
-
-
-<!-- QUICK ACCESS -->
-
-<div
-class="mt-6 bg-white rounded-xl border border-slate-200 p-5">
-
-
-<h2 class="font-bold text-lg">
-
-Quick Access
-
-</h2>
-
-<p class="text-sm text-slate-500 mb-5">
-
-Frequently used student services
-
-</p>
-
-
-<div
-class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-
-
-<button
-class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 text-left">
-
-<span
-class="material-symbols-outlined text-green-600">
-
-event_available
-
-</span>
-
-<p class="font-semibold text-sm mt-2">
-
-Attendance
-
-</p>
-
-</button>
-
-
-
-<button
-class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 text-left">
-
-<span
-class="material-symbols-outlined text-indigo-600">
-
-grade
-
-</span>
-
-<p class="font-semibold text-sm mt-2">
-
-Results
-
-</p>
-
-</button>
-
-
-
-<button
-class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 text-left">
-
-<span
-class="material-symbols-outlined text-blue-600">
-
-library_books
-
-</span>
-
-<p class="font-semibold text-sm mt-2">
-
-Study Material
-
-</p>
-
-</button>
-
-
-
-<button
-class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 text-left">
-
-<span
-class="material-symbols-outlined text-purple-600">
-
-payments
-
-</span>
-
-<p class="font-semibold text-sm mt-2">
-
-Fee Details
-
-</p>
-
-</button>
-
-
-</div>
-
-</div>
-
-
-
-<!-- NOTICES -->
-
-<div
-class="mt-6 bg-white rounded-xl border border-slate-200 p-5">
-
-
-<h2 class="font-bold text-lg">
-
-Latest Notices
-
-</h2>
-
-<div class="mt-4 space-y-3">
-
-
-<div
-class="flex items-center p-3 bg-indigo-50 rounded-lg">
-
-<span
-class="material-symbols-outlined text-indigo-600 mr-3">
-
-campaign
-
-</span>
-
-<div>
-
-<p class="font-semibold text-sm">
-
-Semester Examination Schedule Released
-
-</p>
-
-<p class="text-xs text-slate-500">
-
-Today
-
-</p>
-
-</div>
-
-</div>
-
-
-
-<div
-class="flex items-center p-3 bg-slate-50 rounded-lg">
-
-<span
-class="material-symbols-outlined text-slate-600 mr-3">
-
-info
-
-</span>
-
-<div>
-
-<p class="font-semibold text-sm">
-
-Fee payment deadline announced
-
-</p>
-
-<p class="text-xs text-slate-500">
-
-Yesterday
-
-</p>
-
-</div>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-</main>
-
-</div>
-
-
-
-<script>
-
-/* MOBILE MENU */
-
-const menuButton =
-document.getElementById("menuButton");
-
-const sidebar =
-document.getElementById("sidebar");
-
-const overlay =
-document.getElementById("overlay");
-
-
-menuButton.addEventListener(
-"click",
-function() {
-
-sidebar.classList.remove(
-"-translate-x-full"
-);
-
-overlay.classList.remove(
-"hidden"
-);
-
-});
-
-
-overlay.addEventListener(
-"click",
-function() {
-
-sidebar.classList.add(
-"-translate-x-full"
-);
-
-overlay.classList.add(
-"hidden"
-);
-
-});
-
-
-
-/* USER */
-
-const user =
-sessionStorage.getItem("erpUser");
-
-
-if(user) {
-
-try {
-
-const userData =
-JSON.parse(user);
-
-if(userData.name) {
-
-document.getElementById(
-"studentName"
-).textContent =
-userData.name;
-
-}
-
-}
-
-catch(e) {}
-
-}
-
-
-
-/* LOGOUT */
-
-function logout() {
-
-sessionStorage.removeItem(
-"erpUser"
-);
-
-window.location.href =
-"index.html";
-
-}
-
-</script>
-
-
+  <!-- MOBILE OVERLAY -->
+  <div id="overlay" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"></div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-200 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <!-- LOGO -->
+    <div class="h-16 flex items-center px-5 border-b border-slate-200">
+      <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+        <span class="material-symbols-outlined text-indigo-600">school</span>
+      </div>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">EduCore ERP</h1>
+        <p class="text-xs text-slate-500">Student Self-Service</p>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="p-3 space-y-1 overflow-y-auto h-[calc(100vh-64px)]">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="sidebar-item sidebar-active w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
+        <span class="material-symbols-outlined mr-3">dashboard</span>
+        Dashboard
+      </button>
+
+      <button onclick="switchTab('attendance')" id="nav-attendance" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
+        <span class="material-symbols-outlined mr-3">event_available</span>
+        My Attendance
+      </button>
+
+      <button onclick="switchTab('marks')" id="nav-marks" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
+        <span class="material-symbols-outlined mr-3">grade</span>
+        Marks & Results
+      </button>
+
+      <button onclick="switchTab('fees')" id="nav-fees" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
+        <span class="material-symbols-outlined mr-3">payments</span>
+        Fee Details
+      </button>
+
+      <div class="border-t border-slate-200 my-3"></div>
+
+      <button onclick="logout()" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm text-red-600 hover:bg-red-50 hover:text-red-700">
+        <span class="material-symbols-outlined mr-3">logout</span>
+        Sign Out
+      </button>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTAINER -->
+  <div class="lg:ml-64 min-h-screen flex flex-col">
+    <!-- TOP BAR -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-20">
+      <div class="flex items-center">
+        <button id="menuButton" class="lg:hidden mr-3 text-slate-600">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div>
+          <h2 id="headerTitle" class="font-bold text-lg">Student Dashboard</h2>
+          <p class="text-xs text-slate-500 hidden sm:block">Academic & Performance Portal</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <div id="studentAvatar" class="w-9 h-9 bg-indigo-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">
+            S
+          </div>
+          <div class="hidden md:block text-right">
+            <p id="topStudentName" class="text-sm font-semibold leading-tight">Student</p>
+            <p class="text-xs text-slate-500">Student</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="p-4 md:p-6 flex-1">
+
+      <!-- ================= TAB 1: DASHBOARD ================= -->
+      <section id="tab-dashboard" class="space-y-6">
+        <!-- PROFILE CARD -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center">
+              <div id="bannerAvatar" class="w-16 h-16 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xl font-bold mr-4">
+                S
+              </div>
+              <div>
+                <h1 id="welcomeStudentName" class="text-2xl font-bold text-slate-900">Welcome, Student</h1>
+                <p id="studentDept" class="text-slate-500 text-sm">Computer Science & Engineering</p>
+                <p id="studentUSN" class="text-xs text-slate-400 font-mono mt-0.5">ID: U005</p>
+              </div>
+            </div>
+            <div>
+              <span class="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Active Student</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-500 font-medium">My Attendance</p>
+                <h3 class="text-2xl font-bold mt-1 text-slate-800" id="statAttendance">--%</h3>
+                <p class="text-xs text-green-600 mt-1 font-semibold">Total Classes Attended</p>
+              </div>
+              <div class="w-11 h-11 bg-green-50 rounded-xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-green-600">event_available</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-500 font-medium">Latest CGPA</p>
+                <h3 class="text-2xl font-bold mt-1 text-slate-800" id="statCGPA">8.42</h3>
+                <p class="text-xs text-indigo-600 mt-1 font-semibold">Academic Standing</p>
+              </div>
+              <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-indigo-600">grade</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-500 font-medium">Enrolled Courses</p>
+                <h3 class="text-2xl font-bold mt-1 text-slate-800">5</h3>
+                <p class="text-xs text-blue-600 mt-1 font-semibold">Current Semester</p>
+              </div>
+              <div class="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-blue-600">menu_book</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-500 font-medium">Fee Balance</p>
+                <h3 class="text-2xl font-bold mt-1 text-slate-800" id="statFeeBal">₹0</h3>
+                <p class="text-xs text-amber-600 mt-1 font-semibold" id="statFeeStatus">Dues cleared</p>
+              </div>
+              <div class="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-amber-600">payments</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIMETABLE & DEADLINES -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2 bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+            <h2 class="font-bold text-lg text-slate-800 mb-4">Today's Academic Schedule</h2>
+            <div class="space-y-3">
+              <div class="flex items-center p-3 rounded-lg bg-indigo-50/50 border border-indigo-100">
+                <div class="w-10 h-10 bg-indigo-600 text-white rounded-lg flex items-center justify-center mr-3 font-semibold text-xs">
+                  09 AM
+                </div>
+                <div class="flex-1">
+                  <p class="font-semibold text-slate-900 text-sm">Engineering Mathematics-I</p>
+                  <p class="text-xs text-slate-500">Room 201 • Prof. Faculty</p>
+                </div>
+                <span class="text-xs font-semibold px-2 py-1 bg-green-100 text-green-700 rounded-full">Lecture</span>
+              </div>
+
+              <div class="flex items-center p-3 rounded-lg border border-slate-200">
+                <div class="w-10 h-10 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center mr-3 font-semibold text-xs">
+                  11 AM
+                </div>
+                <div class="flex-1">
+                  <p class="font-semibold text-slate-900 text-sm">Data Structures & Applications</p>
+                  <p class="text-xs text-slate-500">Room 305 • CSE Dept</p>
+                </div>
+                <span class="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Lecture</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK LINKS -->
+          <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <h2 class="font-bold text-lg text-slate-800 mb-1">Quick Portals</h2>
+              <p class="text-xs text-slate-500 mb-4">Immediate access links</p>
+              
+              <div class="space-y-2">
+                <button onclick="switchTab('attendance')" class="w-full flex items-center p-3 border border-slate-200 rounded-lg hover:bg-green-50 text-left transition">
+                  <span class="material-symbols-outlined text-green-600 mr-3">event_available</span>
+                  <div>
+                    <p class="text-sm font-semibold">Attendance Log</p>
+                    <p class="text-xs text-slate-500">View detailed subject presence</p>
+                  </div>
+                </button>
+
+                <button onclick="switchTab('marks')" class="w-full flex items-center p-3 border border-slate-200 rounded-lg hover:bg-indigo-50 text-left transition">
+                  <span class="material-symbols-outlined text-indigo-600 mr-3">grade</span>
+                  <div>
+                    <p class="text-sm font-semibold">Marks Sheet</p>
+                    <p class="text-xs text-slate-500">Check IA and assignment marks</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 2: MY ATTENDANCE ================= -->
+      <section id="tab-attendance" class="hidden space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="font-bold text-lg text-slate-800">My Attendance History</h2>
+              <p class="text-xs text-slate-500">Subject-wise presence records</p>
+            </div>
+            <button onclick="fetchStudentAttendance()" class="text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded font-semibold hover:bg-indigo-100">
+              Refresh
+            </button>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                <tr>
+                  <th class="p-3">Date</th>
+                  <th class="p-3">Subject</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="studentAttendanceTable">
+                <tr><td colspan="4" class="p-4 text-center text-slate-400">Loading attendance data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: MARKS & RESULTS ================= -->
+      <section id="tab-marks" class="hidden space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="font-bold text-lg text-slate-800">Assessment Scores & Marks</h2>
+              <p class="text-xs text-slate-500">Internal Assessment (IA) and exam scores</p>
+            </div>
+            <button onclick="fetchStudentMarks()" class="text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded font-semibold hover:bg-indigo-100">
+              Refresh
+            </button>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                <tr>
+                  <th class="p-3">Assessment</th>
+                  <th class="p-3">Subject</th>
+                  <th class="p-3">Marks Scored</th>
+                  <th class="p-3">Maximum Marks</th>
+                  <th class="p-3">Percentage</th>
+                </tr>
+              </thead>
+              <tbody id="studentMarksTable">
+                <tr><td colspan="5" class="p-4 text-center text-slate-400">Loading marks records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 4: FEE DETAILS ================= -->
+      <section id="tab-fees" class="hidden space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <h2 class="font-bold text-lg text-slate-800 mb-2">Institutional Fee Summary</h2>
+          <p class="text-xs text-slate-500 mb-4">Fee balances and transactions mapped to your account</p>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                <tr>
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Total Amount</th>
+                  <th class="p-3">Paid Amount</th>
+                  <th class="p-3">Balance</th>
+                  <th class="p-3">Due Date</th>
+                  <th class="p-3">Status</th>
+                </tr>
+              </thead>
+              <tbody id="studentFeesTable">
+                <tr><td colspan="6" class="p-4 text-center text-slate-400">Loading fee records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // CONFIGURATION
+    // ----------------------------------------------------
+    const API_URL = "YOUR_DEPLOYED_WEB_APP_URL"; // Replace with your live Apps Script Web App URL
+
+    // Authentication Guard
+    const sessionData = sessionStorage.getItem("erp_user") || sessionStorage.getItem("erpUser");
+    let currentUser = null;
+
+    if (!sessionData) {
+      window.location.href = "index.html";
+    } else {
+      currentUser = JSON.parse(sessionData);
+      
+      const displayName = currentUser.Name || "Student";
+      document.getElementById("topStudentName").textContent = displayName;
+      document.getElementById("welcomeStudentName").textContent = `Welcome, ${displayName}`;
+      document.getElementById("studentAvatar").textContent = displayName.charAt(0).toUpperCase();
+      document.getElementById("bannerAvatar").textContent = displayName.charAt(0).toUpperCase();
+      document.getElementById("studentUSN").textContent = `ID / USN: ${currentUser.StudentID || currentUser.UserID || 'U005'}`;
+      if (currentUser.DepartmentID) {
+        document.getElementById("studentDept").textContent = `Department: ${currentUser.DepartmentID}`;
+      }
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      ["dashboard", "attendance", "marks", "fees"].forEach(id => {
+        document.getElementById(`tab-${id}`).classList.add("hidden");
+        const navBtn = document.getElementById(`nav-${id}`);
+        if (navBtn) navBtn.classList.remove("sidebar-active");
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) activeNav.classList.add("sidebar-active");
+
+      const titleMap = {
+        dashboard: "Student Dashboard",
+        attendance: "My Attendance History",
+        marks: "Marks & Results",
+        fees: "Fee Details"
+      };
+      document.getElementById("headerTitle").innerText = titleMap[tabId] || "Student Portal";
+
+      if (tabId === "attendance") fetchStudentAttendance();
+      if (tabId === "marks") fetchStudentMarks();
+      if (tabId === "fees") fetchStudentFees();
+    }
+
+    // ----------------------------------------------------
+    // DATA FETCHING FUNCTIONS
+    // ----------------------------------------------------
+
+    // 1. Fetch Attendance
+    async function fetchStudentAttendance() {
+      const tbody = document.getElementById("studentAttendanceTable");
+      tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Loading attendance...</td></tr>`;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "get", sheet: "ATTENDANCE" })
+        });
+        const json = await res.json();
+
+        if (json.success && json.data) {
+          const myId = currentUser.StudentID || currentUser.UserID || currentUser.AdmissionNo;
+          const records = json.data.filter(r => String(r.StudentID).trim() === String(myId).trim() || !r.StudentID);
+
+          if (records.length > 0) {
+            tbody.innerHTML = "";
+            let presentCount = 0;
+
+            records.forEach(r => {
+              const isPresent = String(r.Status).toLowerCase() === "present" || String(r.Status).toLowerCase() === "p";
+              if (isPresent) presentCount++;
+
+              const dateStr = r.Date ? new Date(r.Date).toLocaleDateString() : "-";
+              tbody.innerHTML += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                  <td class="p-3 font-medium">${dateStr}</td>
+                  <td class="p-3">${r.SubjectID || "-"}</td>
+                  <td class="p-3">
+                    <span class="px-2 py-1 rounded text-xs font-semibold ${isPresent ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                      ${r.Status || "Absent"}
+                    </span>
+                  </td>
+                  <td class="p-3 text-slate-500">${r.Remarks || "-"}</td>
+                </tr>
+              `;
+            });
+
+            const pct = ((presentCount / records.length) * 100).toFixed(1);
+            document.getElementById("statAttendance").innerText = pct + "%";
+          } else {
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No attendance entries recorded yet.</td></tr>`;
+          }
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Failed to load attendance logs.</td></tr>`;
+      }
+    }
+
+    // 2. Fetch Marks
+    async function fetchStudentMarks() {
+      const tbody = document.getElementById("studentMarksTable");
+      tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Loading marks...</td></tr>`;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "get", sheet: "MARKS" })
+        });
+        const json = await res.json();
+
+        if (json.success && json.data) {
+          const myId = currentUser.StudentID || currentUser.UserID;
+          const records = json.data.filter(r => String(r.StudentID).trim() === String(myId).trim() || !r.StudentID);
+
+          if (records.length > 0) {
+            tbody.innerHTML = "";
+            records.forEach(r => {
+              const max = Number(r.MaximumMarks) || 50;
+              const scored = Number(r.Marks) || 0;
+              const pct = ((scored / max) * 100).toFixed(1);
+
+              tbody.innerHTML += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                  <td class="p-3 font-medium">${r.AssessmentID || "Assessment"}</td>
+                  <td class="p-3">${r.SubjectID || "-"}</td>
+                  <td class="p-3 font-semibold text-slate-800">${scored}</td>
+                  <td class="p-3 text-slate-500">${max}</td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold ${pct >= 40 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                      ${pct}%
+                    </span>
+                  </td>
+                </tr>
+              `;
+            });
+          } else {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">No assessment records found.</td></tr>`;
+          }
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-500">Failed to load marks.</td></tr>`;
+      }
+    }
+
+    // 3. Fetch Fees
+    async function fetchStudentFees() {
+      const tbody = document.getElementById("studentFeesTable");
+      tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Loading fees...</td></tr>`;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "get", sheet: "FEES" })
+        });
+        const json = await res.json();
+
+        if (json.success && json.data) {
+          const myId = currentUser.StudentID || currentUser.UserID;
+          const records = json.data.filter(r => String(r.StudentID).trim() === String(myId).trim() || !r.StudentID);
+
+          if (records.length > 0) {
+            tbody.innerHTML = "";
+            let totalBal = 0;
+
+            records.forEach(r => {
+              const bal = Number(r.Balance) || 0;
+              totalBal += bal;
+              const due = r.DueDate ? new Date(r.DueDate).toLocaleDateString() : "-";
+
+              tbody.innerHTML += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                  <td class="p-3 font-medium">${r.FeeCategory || "Semester Tuition Fee"}</td>
+                  <td class="p-3">₹${Number(r.Amount || 0).toLocaleString()}</td>
+                  <td class="p-3 text-green-600 font-medium">₹${Number(r.PaidAmount || 0).toLocaleString()}</td>
+                  <td class="p-3 text-amber-600 font-semibold">₹${bal.toLocaleString()}</td>
+                  <td class="p-3 text-slate-500">${due}</td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold ${bal === 0 ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
+                      ${r.Status || (bal === 0 ? 'Paid' : 'Pending')}
+                    </span>
+                  </td>
+                </tr>
+              `;
+            });
+
+            document.getElementById("statFeeBal").innerText = "₹" + totalBal.toLocaleString();
+            document.getElementById("statFeeStatus").innerText = totalBal === 0 ? "Dues cleared" : "Payment pending";
+          } else {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No fee dues found for this account.</td></tr>`;
+          }
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">Failed to load fee ledger.</td></tr>`;
+      }
+    }
+
+    // Sidebar toggle (Mobile)
+    const menuButton = document.getElementById("menuButton");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    menuButton.addEventListener("click", () => {
+      sidebar.classList.remove("-translate-x-full");
+      overlay.classList.remove("hidden");
+    });
+
+    overlay.addEventListener("click", () => {
+      sidebar.classList.add("-translate-x-full");
+      overlay.classList.add("hidden");
+    });
+
+    function logout() {
+      sessionStorage.removeItem("erp_user");
+      sessionStorage.removeItem("erpUser");
+      window.location.href = "index.html";
+    }
+
+    // Load initial student stats on page ready
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchStudentAttendance();
+    });
+  </script>
 </body>
-
 </html>
