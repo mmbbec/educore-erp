@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EduCore ERP - Login</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+rel="stylesheet">
+
+<link
+href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1"
+rel="stylesheet">
+
+<style>
+
+body {
+    font-family: Inter, sans-serif;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.role-active {
+    background:#4f46e5 !important;
+    color:white !important;
+    border-color:#4338ca !important;
+}
+
+</style>
+
+</head>
+
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+
+<main
+class="w-full max-w-md bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+
+
+<!-- HEADER -->
+
+<div class="px-6 pt-8 pb-6 text-center">
+
+<div
+class="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 rounded-full mb-4">
+
+<span
+class="material-symbols-outlined text-indigo-600"
+style="font-size:48px;">
+
+school
+
+</span>
+
+</div>
+
+
+<h1 class="text-3xl font-bold text-slate-900 mb-2">
+
+EduCore ERP
+
+</h1>
+
+
+<p class="text-sm text-slate-600">
+
+Sign in to access your institutional dashboard
+
+</p>
+
+</div>
+
+
+
+<div class="px-6 pb-7">
+
+
+<!-- ROLE -->
+
+<div class="mb-7">
+
+<label
+class="block text-xs font-medium text-slate-600 mb-2">
+
+Select Role
+
+</label>
+
+
+<div class="grid grid-cols-4 gap-2">
+
+
+<button
+type="button"
+class="role-button role-active py-3 flex flex-col items-center justify-center rounded-lg border"
+data-role="Admin">
+
+<span class="material-symbols-outlined text-[20px] mb-1">
+
+admin_panel_settings
+
+</span>
+
+<span class="text-xs font-medium">
+
+Admin
+
+</span>
+
+</button>
+
+
+<button
+type="button"
+class="role-button py-3 flex flex-col items-center justify-center rounded-lg bg-slate-100 border border-slate-200 hover:bg-slate-200"
+data-role="Faculty">
+
+<span class="material-symbols-outlined text-[20px] mb-1">
+
+school
+
+</span>
+
+<span class="text-xs font-medium">
+
+Faculty
+
+</span>
+
+</button>
+
+
+<button
+type="button"
+class="role-button py-3 flex flex-col items-center justify-center rounded-lg bg-slate-100 border border-slate-200 hover:bg-slate-200"
+data-role="Student">
+
+<span class="material-symbols-outlined text-[20px] mb-1">
+
+person
+
+</span>
+
+<span class="text-xs font-medium">
+
+Student
+
+</span>
+
+</button>
+
+
+<button
+type="button"
+class="role-button py-3 flex flex-col items-center justify-center rounded-lg bg-slate-100 border border-slate-200 hover:bg-slate-200"
+data-role="Parent">
+
+<span class="material-symbols-outlined text-[20px] mb-1">
+
+family_restroom
+
+</span>
+
+<span class="text-xs font-medium">
+
+Parent
+
+</span>
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<!-- LOGIN FORM -->
+
+<form id="loginForm">
+
+
+<!-- EMAIL -->
+
+<div class="mb-4">
+
+<label
+for="email"
+class="block text-xs font-medium text-slate-600 mb-1">
+
+Email
+
+</label>
+
+
+<div class="relative">
+
+<span
+class="material-symbols-outlined absolute left-3 top-3 text-slate-400">
+
+mail
+
+</span>
+
+
+<input
+id="email"
+type="email"
+required
+placeholder="Enter your email"
+class="w-full h-11 pl-10 pr-3 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm">
+
+</div>
+
+</div>
+
+
+
+<!-- PASSWORD -->
+
+<div class="mb-4">
+
+<label
+for="password"
+class="block text-xs font-medium text-slate-600 mb-1">
+
+Password
+
+</label>
+
+
+<div class="relative">
+
+<span
+class="material-symbols-outlined absolute left-3 top-3 text-slate-400">
+
+lock
+
+</span>
+
+
+<input
+id="password"
+type="password"
+required
+placeholder="Enter password"
+class="w-full h-11 pl-10 pr-10 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm">
+
+
+<button
+type="button"
+id="togglePassword"
+class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-700">
+
+<span
+id="passwordIcon"
+class="material-symbols-outlined">
+
+visibility_off
+
+</span>
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- REMEMBER -->
+
+<div class="flex items-center justify-between mt-4 mb-6">
+
+<label class="flex items-center text-sm text-slate-600">
+
+<input
+type="checkbox"
+id="rememberMe"
+class="mr-2 rounded">
+
+Remember me
+
+</label>
+
+
+<a
+href="#"
+onclick="forgotPassword(); return false;"
+class="text-sm font-semibold text-indigo-600">
+
+Forgot password?
+
+</a>
+
+</div>
+
+
+
+<!-- MESSAGE -->
+
+<div
+id="message"
+class="hidden mb-4 p-3 rounded-lg text-sm">
+</div>
+
+
+
+<!-- LOGIN -->
+
+<button
+type="submit"
+id="loginButton"
+class="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold flex items-center justify-center">
+
+<span id="loginText">
+
+Login to Dashboard
+
+</span>
+
+<span class="material-symbols-outlined ml-2">
+
+arrow_forward
+
+</span>
+
+</button>
+
+
+</form>
+
+
+
+<!-- SUPPORT -->
+
+<div class="mt-6 text-center">
+
+<p class="text-sm text-slate-600">
+
+Need help?
+
+<a
+href="#"
+onclick="contactSupport(); return false;"
+class="font-semibold text-indigo-600">
+
+Contact IT Support
+
+</a>
+
+</p>
+
+</div>
+
+
+</div>
+
+</main>
+
+
+
+<script>
+
+/************************************************
+ * DEMO USERS
+ *
+ * TEMPORARY ONLY
+ ************************************************/
+
+const users = [
+
+{
+email: "admin@educore.edu",
+password: "Admin@123",
+role: "Admin",
+name: "System Administrator"
+},
+
+{
+email: "faculty@educore.edu",
+password: "Faculty@123",
+role: "Faculty",
+name: "Demo Faculty"
+},
+
+{
+email: "student@educore.edu",
+password: "Student@123",
+role: "Student",
+name: "Demo Student"
+},
+
+{
+email: "parent@educore.edu",
+password: "Parent@123",
+role: "Parent",
+name: "Demo Parent"
+}
+
+];
+
+
+/************************************************
+ * SELECTED ROLE
+ ************************************************/
+
+let selectedRole = "Admin";
+
+
+/************************************************
+ * ROLE BUTTONS
+ ************************************************/
+
+document
+.querySelectorAll(".role-button")
+.forEach(function(button) {
+
+button.addEventListener("click", function() {
+
+selectedRole =
+button.dataset.role;
+
+
+document
+.querySelectorAll(".role-button")
+.forEach(function(btn) {
+
+btn.classList.remove("role-active");
+
+btn.classList.add(
+"bg-slate-100",
+"text-slate-800"
+);
+
+});
+
+
+button.classList.add("role-active");
+
+button.classList.remove(
+"bg-slate-100",
+"text-slate-800"
+);
+
+});
+
+});
+
+
+/************************************************
+ * PASSWORD VISIBILITY
+ ************************************************/
+
+document
+.getElementById("togglePassword")
+.addEventListener("click", function() {
+
+const password =
+document.getElementById("password");
+
+const icon =
+document.getElementById("passwordIcon");
+
+
+if(password.type === "password") {
+
+password.type = "text";
+
+icon.textContent = "visibility";
+
+} else {
+
+password.type = "password";
+
+icon.textContent = "visibility_off";
+
+}
+
+});
+
+
+/************************************************
+ * LOGIN
+ ************************************************/
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", function(event) {
+
+event.preventDefault();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim()
+.toLowerCase();
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+const user =
+users.find(function(u) {
+
+return (
+u.email.toLowerCase() === email &&
+u.password === password
+);
+
+});
+
+
+if(!user) {
+
+showMessage(
+"Invalid email or password.",
+false
+);
+
+return;
+
+}
+
+
+if(user.role !== selectedRole) {
+
+showMessage(
+"Please select the correct role for this account.",
+false
+);
+
+return;
+
+}
+
+
+/************************************************
+ * SAVE SESSION
+ ************************************************/
+
+sessionStorage.setItem(
+"erpUser",
+JSON.stringify(user)
+);
+
+
+if(
+document.getElementById("rememberMe").checked
+) {
+
+localStorage.setItem(
+"erpRememberEmail",
+email
+);
+
+}
+
+
+/************************************************
+ * LOGIN SUCCESS
+ ************************************************/
+
+showMessage(
+"Login successful. Opening dashboard...",
+true
+);
+
+
+setTimeout(function() {
+
+redirectUser(user.role);
+
+}, 700);
+
+});
+
+
+/************************************************
+ * REDIRECT
+ ************************************************/
+
+function redirectUser(role) {
+
+const pages = {
+
+Admin: "admin-dashboard.html",
+
+Faculty: "faculty-dashboard.html",
+
+Student: "student-dashboard.html",
+
+Parent: "parent-dashboard.html"
+
+};
+
+
+window.location.href =
+pages[role];
+
+}
+
+
+/************************************************
+ * MESSAGE
+ ************************************************/
+
+function showMessage(text, success) {
+
+const box =
+document.getElementById("message");
+
+
+box.classList.remove("hidden");
+
+
+if(success) {
+
+box.className =
+"mb-4 p-3 rounded-lg text-sm bg-green-100 text-green-700";
+
+} else {
+
+box.className =
+"mb-4 p-3 rounded-lg text-sm bg-red-100 text-red-700";
+
+}
+
+
+box.textContent = text;
+
+}
+
+
+/************************************************
+ * FORGOT PASSWORD
+ ************************************************/
+
+function forgotPassword() {
+
+alert(
+"Password recovery will be connected later."
+);
+
+}
+
+
+/************************************************
+ * IT SUPPORT
+ ************************************************/
+
+function contactSupport() {
+
+alert(
+"IT Support module will be connected later."
+);
+
+}
+
+
+/************************************************
+ * REMEMBER EMAIL
+ ************************************************/
+
+window.addEventListener("DOMContentLoaded", function() {
+
+const savedEmail =
+localStorage.getItem(
+"erpRememberEmail"
+);
+
+
+if(savedEmail) {
+
+document.getElementById("email").value =
+savedEmail;
+
+document.getElementById("rememberMe").checked =
+true;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
