@@ -2766,7 +2766,92 @@ function() {
 
 });
 
+/****************************************************
+ * LOAD ADMIN DASHBOARD DATA
+ ****************************************************/
 
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzPmWkPj_2OIXoW9Mbfip_DZG3Plst7qwzbur11ohTvRdY2qg0xU1Fsp5ifZbBUaXK7ow/exec";
+
+
+async function loadDashboardData() {
+
+    try {
+
+        const response = await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify({
+
+                action: "dashboard"
+
+            })
+
+        });
+
+
+        const result =
+            await response.json();
+
+
+        console.log("Dashboard Data:", result);
+
+
+        if (!result.success) {
+
+            console.error(
+                "Dashboard error:",
+                result.error
+            );
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "totalStudents"
+        ).textContent =
+            result.students;
+
+
+        document.getElementById(
+            "totalFaculty"
+        ).textContent =
+            result.faculty;
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to load dashboard data:",
+            error
+        );
+
+    }
+
+}
+
+
+/****************************************************
+ * START DASHBOARD
+ ****************************************************/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadDashboardData();
+
+    }
+);
 </script>
 
 
