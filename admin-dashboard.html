@@ -1,132 +1,170 @@
-/****************************************************
- * ADMIN DASHBOARD DATA
- * Aggregates Students, Faculty, Daily Attendance %, and Fees
- ****************************************************/
-function getAdminDashboardData() {
-  try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduCore ERP - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #f8fafc; color: #1e293b; }
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar h2 { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .btn-logout {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-logout:hover { background: #e2e8f0; }
+    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+    .stat-title { font-size: 0.875rem; color: #64748b; font-weight: 600; }
+    .stat-value { font-size: 1.875rem; font-weight: 700; margin-top: 0.5rem; color: #0f172a; }
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+    .section-card h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; font-size: 0.875rem; }
+    th { color: #64748b; font-weight: 600; background: #f8fafc; }
+  </style>
+</head>
+<body>
 
-    const studentsSheet = ss.getSheetByName("STUDENTS");
-    const facultySheet = ss.getSheetByName("FACULTY");
-    const attendanceSheet = ss.getSheetByName("ATTENDANCE");
-    const feesSheet = ss.getSheetByName("FEES");
+  <header class="navbar">
+    <h2>EduCore ERP Administration</h2>
+    <div class="user-pill">
+      <span id="userName">Admin User</span>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
 
-    let students = 0;
-    let faculty = 0;
-    let attendanceToday = 0;
-    let totalFeesCollected = 0;
+  <main class="container">
+    <div class="grid-stats">
+      <div class="stat-card">
+        <div class="stat-title">Total Active Students</div>
+        <div class="stat-value" id="statStudents">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Total Faculty</div>
+        <div class="stat-value" id="statFaculty">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Today's Attendance</div>
+        <div class="stat-value" id="statAttendance">--%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Total Fees Collected</div>
+        <div class="stat-value" id="statFees">₹--</div>
+      </div>
+    </div>
 
-    /************************************************
-     * 1. STUDENTS (Active or Unmarked)
-     ************************************************/
-    if (studentsSheet && studentsSheet.getLastRow() > 1) {
-      const data = studentsSheet.getDataRange().getValues();
-      const headers = data[0];
-      const statusIndex = headers.indexOf("Status");
+    <div class="section-card">
+      <h3>Academic Departments</h3>
+      <table id="deptTable">
+        <thead>
+          <tr>
+            <th>Department Code</th>
+            <th>Department Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="deptList">
+          <tr><td colspan="3" style="text-align: center; color: #94a3b8;">Loading department records...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 
-      for (let i = 1; i < data.length; i++) {
-        // Skip entirely blank rows
-        const hasContent = data[i].some(cell => String(cell).trim() !== "");
-        if (!hasContent) continue;
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwW62c3BqM9V5bY5T50Qz5eE-example/exec";
 
-        if (statusIndex !== -1) {
-          const status = String(data[i][statusIndex] || "").trim().toLowerCase();
-          if (status === "active" || status === "") {
-            students++;
+    // Authentication Guard
+    const userSession = JSON.parse(sessionStorage.getItem("erp_user"));
+    if (!userSession) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("userName").innerText = `${userSession.Name} (${userSession.UserType})`;
+    }
+
+    function logout() {
+      sessionStorage.removeItem("erp_user");
+      window.location.href = "index.html";
+    }
+
+    async function loadDashboardMetrics() {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "dashboard" })
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.dashboard) {
+          const stats = result.dashboard;
+          document.getElementById("statStudents").innerText = stats.totalStudents;
+          document.getElementById("statFaculty").innerText = stats.totalFaculty;
+          document.getElementById("statAttendance").innerText = stats.attendanceToday + "%";
+          document.getElementById("statFees").innerText = "₹" + stats.paidFees.toLocaleString();
+
+          // Render Departments
+          const tbody = document.getElementById("deptList");
+          tbody.innerHTML = "";
+          if (stats.departments && stats.departments.length > 0) {
+            stats.departments.forEach(dept => {
+              const row = `<tr>
+                <td><strong>${dept.DepartmentCode || '-'}</strong></td>
+                <td>${dept.DepartmentName || '-'}</td>
+                <td>${dept.Status || 'Active'}</td>
+              </tr>`;
+              tbody.innerHTML += row;
+            });
+          } else {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #94a3b8;">No departments configured in DEPARTMENTS sheet.</td></tr>`;
           }
-        } else {
-          students++;
         }
+      } catch (err) {
+        console.error("Dashboard error:", err);
       }
     }
 
-    /************************************************
-     * 2. FACULTY (Non-empty Faculty ID / First Column)
-     ************************************************/
-    if (facultySheet && facultySheet.getLastRow() > 1) {
-      const data = facultySheet.getDataRange().getValues();
-      for (let i = 1; i < data.length; i++) {
-        if (String(data[i][0]).trim() !== "") {
-          faculty++;
-        }
-      }
-    }
-
-    /************************************************
-     * 3. ATTENDANCE (Today's % Present)
-     ************************************************/
-    if (attendanceSheet && attendanceSheet.getLastRow() > 1) {
-      const data = attendanceSheet.getDataRange().getValues();
-      const headers = data[0];
-      const dateIndex = headers.indexOf("Date");
-      const statusIndex = headers.indexOf("Status");
-
-      if (dateIndex !== -1 && statusIndex !== -1) {
-        let present = 0;
-        let total = 0;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        for (let i = 1; i < data.length; i++) {
-          if (!data[i][dateIndex]) continue;
-          
-          const recordDate = new Date(data[i][dateIndex]);
-          recordDate.setHours(0, 0, 0, 0);
-
-          if (recordDate.getTime() === today.getTime()) {
-            total++;
-            const status = String(data[i][statusIndex] || "").trim().toLowerCase();
-            if (status === "present" || status === "p") {
-              present++;
-            }
-          }
-        }
-
-        if (total > 0) {
-          attendanceToday = Number(((present / total) * 100).toFixed(1));
-        }
-      }
-    }
-
-    /************************************************
-     * 4. FEES (Sum of PaidAmount)
-     ************************************************/
-    if (feesSheet && feesSheet.getLastRow() > 1) {
-      const data = feesSheet.getDataRange().getValues();
-      const headers = data[0];
-      const paidIndex = headers.indexOf("PaidAmount");
-
-      if (paidIndex !== -1) {
-        for (let i = 1; i < data.length; i++) {
-          const val = Number(data[i][paidIndex]);
-          if (!isNaN(val)) {
-            totalFeesCollected += val;
-          }
-        }
-      }
-    }
-
-    /************************************************
-     * RETURN PAYLOAD
-     ************************************************/
-    return {
-      success: true,
-      students: students,
-      faculty: faculty,
-      attendance: attendanceToday,
-      fees: totalFeesCollected,
-      dashboard: {
-        totalStudents: students,
-        totalFaculty: faculty,
-        attendanceToday: attendanceToday,
-        paidFees: totalFeesCollected
-      }
-    };
-
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message || error.toString()
-    };
-  }
-}
+    window.addEventListener("DOMContentLoaded", loadDashboardMetrics);
+  </script>
+</body>
+</html>
