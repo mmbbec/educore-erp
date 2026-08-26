@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,8 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>EduCore ERP - Admin Dashboard</title>
 
@@ -81,11 +79,8 @@ class="h-16 flex items-center px-5 border-b border-slate-200">
 <div
 class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
 
-<span
-class="material-symbols-outlined text-indigo-600">
-
+<span class="material-symbols-outlined text-indigo-600">
 school
-
 </span>
 
 </div>
@@ -111,6 +106,7 @@ Administration
 
 
 <button
+onclick="showModule('Dashboard')"
 class="sidebar-item sidebar-active w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -123,6 +119,7 @@ Dashboard
 
 
 <button
+onclick="showModule('Students')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -135,6 +132,7 @@ Students
 
 
 <button
+onclick="showModule('Faculty')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -147,6 +145,7 @@ Faculty
 
 
 <button
+onclick="showModule('Departments')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -159,6 +158,7 @@ Departments
 
 
 <button
+onclick="showModule('Academics')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -171,6 +171,7 @@ Academics
 
 
 <button
+onclick="showModule('Attendance')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -183,6 +184,7 @@ Attendance
 
 
 <button
+onclick="showModule('Examinations')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -195,6 +197,7 @@ Examinations
 
 
 <button
+onclick="showModule('Results')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -207,6 +210,7 @@ Results
 
 
 <button
+onclick="showModule('Fees')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -219,6 +223,7 @@ Fees
 
 
 <button
+onclick="showModule('Timetable')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -231,6 +236,7 @@ Timetable
 
 
 <button
+onclick="showModule('Notices')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -243,6 +249,7 @@ Notices
 
 
 <button
+onclick="showModule('Reports')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -255,6 +262,7 @@ Reports
 
 
 <button
+onclick="showModule('Settings')"
 class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg text-sm">
 
 <span class="material-symbols-outlined mr-3">
@@ -266,7 +274,8 @@ Settings
 </button>
 
 
-<div class="border-t border-slate-200 my-3"></div>
+<div class="border-t border-slate-200 my-3">
+</div>
 
 
 <button
@@ -280,7 +289,6 @@ logout
 Logout
 
 </button>
-
 
 </nav>
 
@@ -300,7 +308,6 @@ class="h-16 bg-white border-b border-slate-200 flex items-center justify-between
 
 <div class="flex items-center">
 
-
 <button
 id="menuButton"
 class="lg:hidden mr-3 text-slate-600">
@@ -314,12 +321,18 @@ menu
 
 <div>
 
-<h2 class="font-bold text-lg">
+<h2
+id="pageTitle"
+class="font-bold text-lg">
+
 Admin Dashboard
+
 </h2>
 
 <p class="text-xs text-slate-500 hidden sm:block">
+
 Institution Administration
+
 </p>
 
 </div>
@@ -370,12 +383,11 @@ Administrator
 id="userRole"
 class="text-xs text-slate-500">
 
-Administrator
+Admin
 
 </p>
 
 </div>
-
 
 </div>
 
@@ -386,7 +398,9 @@ Administrator
 
 <!-- CONTENT -->
 
-<main class="p-4 md:p-6">
+<main
+id="mainContent"
+class="p-4 md:p-6">
 
 
 <!-- WELCOME -->
@@ -394,9 +408,10 @@ Administrator
 <div class="mb-6">
 
 <h1
+id="welcomeName"
 class="text-2xl md:text-3xl font-bold text-slate-900">
 
-Welcome, <span id="welcomeName">Administrator</span>
+Welcome, Administrator
 
 </h1>
 
@@ -429,15 +444,15 @@ Total Students
 </p>
 
 <h3
-id="totalStudents"
+id="studentCount"
 class="text-3xl font-bold mt-2">
 
-1,248
+0
 
 </h3>
 
-<p class="text-xs text-green-600 mt-2">
-↑ 8.2% this year
+<p class="text-xs text-slate-500 mt-2">
+Students registered in ERP
 </p>
 
 </div>
@@ -445,8 +460,7 @@ class="text-3xl font-bold mt-2">
 <div
 class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
 
-<span
-class="material-symbols-outlined text-indigo-600">
+<span class="material-symbols-outlined text-indigo-600">
 school
 </span>
 
@@ -471,15 +485,15 @@ Faculty Members
 </p>
 
 <h3
-id="totalFaculty"
+id="facultyCount"
 class="text-3xl font-bold mt-2">
 
-86
+0
 
 </h3>
 
-<p class="text-xs text-green-600 mt-2">
-↑ 4 new this year
+<p class="text-xs text-slate-500 mt-2">
+Faculty registered in ERP
 </p>
 
 </div>
@@ -487,8 +501,7 @@ class="text-3xl font-bold mt-2">
 <div
 class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
 
-<span
-class="material-symbols-outlined text-blue-600">
+<span class="material-symbols-outlined text-blue-600">
 groups
 </span>
 
@@ -499,7 +512,7 @@ groups
 </div>
 
 
-<!-- ATTENDANCE -->
+<!-- DEPARTMENTS -->
 
 <div
 class="bg-white rounded-xl border border-slate-200 p-5">
@@ -509,19 +522,19 @@ class="bg-white rounded-xl border border-slate-200 p-5">
 <div>
 
 <p class="text-sm text-slate-500">
-Today's Attendance
+Departments
 </p>
 
 <h3
-id="todayAttendance"
+id="departmentCount"
 class="text-3xl font-bold mt-2">
 
-92.4%
+0
 
 </h3>
 
-<p class="text-xs text-green-600 mt-2">
-↑ 2.1% from yesterday
+<p class="text-xs text-slate-500 mt-2">
+Active departments
 </p>
 
 </div>
@@ -529,9 +542,8 @@ class="text-3xl font-bold mt-2">
 <div
 class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
 
-<span
-class="material-symbols-outlined text-green-600">
-event_available
+<span class="material-symbols-outlined text-green-600">
+account_balance
 </span>
 
 </div>
@@ -541,7 +553,7 @@ event_available
 </div>
 
 
-<!-- FEES -->
+<!-- USERS -->
 
 <div
 class="bg-white rounded-xl border border-slate-200 p-5">
@@ -551,19 +563,19 @@ class="bg-white rounded-xl border border-slate-200 p-5">
 <div>
 
 <p class="text-sm text-slate-500">
-Fees Collected
+ERP Users
 </p>
 
 <h3
-id="feesCollected"
+id="userCount"
 class="text-3xl font-bold mt-2">
 
-₹24.8L
+0
 
 </h3>
 
-<p class="text-xs text-green-600 mt-2">
-↑ 12.5% this month
+<p class="text-xs text-slate-500 mt-2">
+Registered system users
 </p>
 
 </div>
@@ -571,9 +583,8 @@ class="text-3xl font-bold mt-2">
 <div
 class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
 
-<span
-class="material-symbols-outlined text-amber-600">
-payments
+<span class="material-symbols-outlined text-amber-600">
+manage_accounts
 </span>
 
 </div>
@@ -585,20 +596,12 @@ payments
 </div>
 
 
-<!-- MAIN GRID -->
-
-<div
-class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-
 <!-- QUICK ACTIONS -->
 
 <div
-class="xl:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
+class="bg-white rounded-xl border border-slate-200 p-5 mb-6">
 
-<div class="flex items-center justify-between mb-5">
-
-<div>
+<div class="mb-5">
 
 <h2 class="font-bold text-lg">
 Quick Actions
@@ -610,119 +613,111 @@ Frequently used administrative functions
 
 </div>
 
-</div>
-
 
 <div
 class="grid grid-cols-2 sm:grid-cols-3 gap-3">
 
 
 <button
-onclick="showComingSoon('Add Student')"
+onclick="showModule('Students')"
 class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
 
-<span
-class="material-symbols-outlined text-indigo-600">
+<span class="material-symbols-outlined text-indigo-600">
 person_add
 </span>
 
 <p class="font-semibold text-sm mt-2">
-Add Student
+Students
 </p>
 
 <p class="text-xs text-slate-500">
-Register new student
+Manage students
 </p>
 
 </button>
 
 
 <button
-onclick="showComingSoon('Add Faculty')"
+onclick="showModule('Faculty')"
 class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
 
-<span
-class="material-symbols-outlined text-blue-600">
+<span class="material-symbols-outlined text-blue-600">
 person_add
 </span>
 
 <p class="font-semibold text-sm mt-2">
-Add Faculty
+Faculty
 </p>
 
 <p class="text-xs text-slate-500">
-Create faculty account
+Manage faculty
 </p>
 
 </button>
 
 
 <button
-onclick="showComingSoon('Create Notice')"
+onclick="showModule('Departments')"
 class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
 
-<span
-class="material-symbols-outlined text-green-600">
-campaign
+<span class="material-symbols-outlined text-green-600">
+account_balance
 </span>
 
 <p class="font-semibold text-sm mt-2">
-Create Notice
+Departments
 </p>
 
 <p class="text-xs text-slate-500">
-Publish announcement
+Manage departments
 </p>
 
 </button>
 
 
 <button
-onclick="showComingSoon('Generate Report')"
+onclick="showModule('Academics')"
 class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
 
-<span
-class="material-symbols-outlined text-purple-600">
+<span class="material-symbols-outlined text-purple-600">
+menu_book
+</span>
+
+<p class="font-semibold text-sm mt-2">
+Academics
+</p>
+
+<p class="text-xs text-slate-500">
+Courses and subjects
+</p>
+
+</button>
+
+
+<button
+onclick="showModule('Reports')"
+class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
+
+<span class="material-symbols-outlined text-orange-600">
 description
 </span>
 
 <p class="font-semibold text-sm mt-2">
-Generate Report
+Reports
 </p>
 
 <p class="text-xs text-slate-500">
-View institution reports
+Generate reports
 </p>
 
 </button>
 
 
 <button
-onclick="showComingSoon('Fee Management')"
+onclick="showModule('Settings')"
 class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
 
-<span
-class="material-symbols-outlined text-orange-600">
-payments
-</span>
-
-<p class="font-semibold text-sm mt-2">
-Fee Management
-</p>
-
-<p class="text-xs text-slate-500">
-Manage fee records
-</p>
-
-</button>
-
-
-<button
-onclick="showComingSoon('Settings')"
-class="p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-200 text-left">
-
-<span
-class="material-symbols-outlined text-red-600">
+<span class="material-symbols-outlined text-red-600">
 settings
 </span>
 
@@ -736,294 +731,120 @@ Configure ERP
 
 </button>
 
-
 </div>
 
 </div>
 
 
-<!-- NOTICE -->
+<!-- SYSTEM STATUS -->
 
 <div
 class="bg-white rounded-xl border border-slate-200 p-5">
 
 <h2 class="font-bold text-lg mb-1">
-Recent Notices
+ERP System Status
 </h2>
 
-<p class="text-sm text-slate-500 mb-4">
-Latest announcements
+<p class="text-sm text-slate-500 mb-5">
+Current system information
 </p>
 
-
-<div class="space-y-4">
-
-
-<div class="border-l-4 border-indigo-500 pl-3">
-
-<p class="font-semibold text-sm">
-Semester Examination Schedule
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-Exam department has published the schedule.
-</p>
-
-<p class="text-xs text-slate-400 mt-1">
-Today
-</p>
-
-</div>
-
-
-<div class="border-l-4 border-green-500 pl-3">
-
-<p class="font-semibold text-sm">
-Faculty Meeting
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-Monthly faculty meeting on Friday.
-</p>
-
-<p class="text-xs text-slate-400 mt-1">
-Yesterday
-</p>
-
-</div>
-
-
-<div class="border-l-4 border-amber-500 pl-3">
-
-<p class="font-semibold text-sm">
-Fee Payment Reminder
-</p>
-
-<p class="text-xs text-slate-500 mt-1">
-Students are requested to clear pending fees.
-</p>
-
-<p class="text-xs text-slate-400 mt-1">
-2 days ago
-</p>
-
-</div>
-
-
-</div>
-
-
-<button
-onclick="showComingSoon('All Notices')"
-class="mt-5 text-sm font-semibold text-indigo-600">
-
-View all notices →
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- DEPARTMENT OVERVIEW -->
 
 <div
-class="mt-6 bg-white rounded-xl border border-slate-200 p-5">
+class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
 
 <div
-class="flex items-center justify-between mb-5">
+class="border border-slate-200 rounded-lg p-4">
+
+<div class="flex items-center gap-3">
+
+<div
+class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+
+<span class="material-symbols-outlined text-green-600">
+check_circle
+</span>
+
+</div>
 
 <div>
 
-<h2 class="font-bold text-lg">
-Department Overview
-</h2>
+<p class="font-semibold text-sm">
+Database
+</p>
 
-<p class="text-sm text-slate-500">
-Student distribution by department
+<p class="text-xs text-green-600">
+Connected
 </p>
 
 </div>
 
-<button
-onclick="showComingSoon('Department Details')"
-class="text-sm text-indigo-600 font-semibold">
-
-View Details
-
-</button>
+</div>
 
 </div>
 
 
-<div class="overflow-x-auto">
+<div
+class="border border-slate-200 rounded-lg p-4">
 
-<table class="w-full text-sm">
+<div class="flex items-center gap-3">
 
-<thead>
+<div
+class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
 
-<tr class="border-b border-slate-200 text-left">
-
-<th class="pb-3 font-semibold">
-Department
-</th>
-
-<th class="pb-3 font-semibold">
-Students
-</th>
-
-<th class="pb-3 font-semibold">
-Faculty
-</th>
-
-<th class="pb-3 font-semibold">
-Attendance
-</th>
-
-<th class="pb-3 font-semibold">
-Status
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody>
-
-
-<tr class="border-b border-slate-100">
-
-<td class="py-4 font-medium">
-Computer Science
-</td>
-
-<td class="py-4">
-420
-</td>
-
-<td class="py-4">
-28
-</td>
-
-<td class="py-4">
-94.2%
-</td>
-
-<td class="py-4">
-
-<span
-class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-
-Good
-
+<span class="material-symbols-outlined text-green-600">
+cloud_done
 </span>
 
-</td>
+</div>
 
-</tr>
+<div>
+
+<p class="font-semibold text-sm">
+Google Sheets API
+</p>
+
+<p class="text-xs text-green-600">
+Connected
+</p>
+
+</div>
+
+</div>
+
+</div>
 
 
-<tr class="border-b border-slate-100">
+<div
+class="border border-slate-200 rounded-lg p-4">
 
-<td class="py-4 font-medium">
-Electronics
-</td>
+<div class="flex items-center gap-3">
 
-<td class="py-4">
-310
-</td>
+<div
+class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
 
-<td class="py-4">
-22
-</td>
-
-<td class="py-4">
-91.8%
-</td>
-
-<td class="py-4">
-
-<span
-class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-
-Good
-
+<span class="material-symbols-outlined text-green-600">
+security
 </span>
 
-</td>
+</div>
 
-</tr>
+<div>
 
+<p class="font-semibold text-sm">
+Security
+</p>
 
-<tr class="border-b border-slate-100">
+<p class="text-xs text-green-600">
+Active
+</p>
 
-<td class="py-4 font-medium">
-Mechanical
-</td>
+</div>
 
-<td class="py-4">
-285
-</td>
+</div>
 
-<td class="py-4">
-20
-</td>
-
-<td class="py-4">
-89.5%
-</td>
-
-<td class="py-4">
-
-<span
-class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs">
-
-Monitor
-
-</span>
-
-</td>
-
-</tr>
-
-
-<tr>
-
-<td class="py-4 font-medium">
-Civil
-</td>
-
-<td class="py-4">
-233
-</td>
-
-<td class="py-4">
-16
-</td>
-
-<td class="py-4">
-92.1%
-</td>
-
-<td class="py-4">
-
-<span
-class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-
-Good
-
-</span>
-
-</td>
-
-</tr>
-
-
-</tbody>
-
-</table>
+</div>
 
 </div>
 
@@ -1044,14 +865,14 @@ Good
 
 
 /****************************************************
- * CHECK LOGIN SESSION
+ * LOGIN SESSION CHECK
  ****************************************************/
 
-const savedUser =
+const storedUser =
 sessionStorage.getItem("erpUser");
 
 
-if (!savedUser) {
+if (!storedUser) {
 
     window.location.href = "index.html";
 
@@ -1059,65 +880,243 @@ if (!savedUser) {
 
 
 /****************************************************
- * LOAD USER INFORMATION
+ * LOAD USER
  ****************************************************/
 
-if (savedUser) {
+let currentUser = null;
+
+
+try {
+
+    currentUser =
+        JSON.parse(storedUser);
+
+} catch (error) {
+
+    sessionStorage.removeItem("erpUser");
+
+    window.location.href = "index.html";
+
+}
+
+
+/****************************************************
+ * DISPLAY USER
+ ****************************************************/
+
+if (currentUser) {
+
+    const name =
+        currentUser.Name ||
+        currentUser.name ||
+        "Administrator";
+
+    const role =
+        currentUser.UserType ||
+        currentUser.userType ||
+        "Admin";
+
+
+    document.getElementById(
+        "userName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "welcomeName"
+    ).textContent =
+        "Welcome, " + name;
+
+
+    document.getElementById(
+        "userRole"
+    ).textContent = role;
+
+
+    const initial =
+        name.charAt(0).toUpperCase();
+
+
+    document.getElementById(
+        "userInitial"
+    ).textContent = initial;
+
+}
+
+
+/****************************************************
+ * GOOGLE APPS SCRIPT API
+ ****************************************************/
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzPmWkPj_2OIXoW9Mbfip_DZG3Plst7qwzbur11ohTvRdY2qg0xU1Fsp5ifZbBUaXK7ow/exec";
+
+
+/****************************************************
+ * LOAD DASHBOARD COUNTS
+ ****************************************************/
+
+async function loadDashboardData() {
 
     try {
 
-        const userData =
-            JSON.parse(savedUser);
+        const students =
+            await getSheetData("STUDENTS");
 
 
-        if (userData.Name) {
-
-            document.getElementById("userName").textContent =
-                userData.Name;
-
-            document.getElementById("welcomeName").textContent =
-                userData.Name;
+        const faculty =
+            await getSheetData("FACULTY");
 
 
-            /* FIRST LETTER */
-
-            const firstLetter =
-                userData.Name
-                .trim()
-                .charAt(0)
-                .toUpperCase();
+        const departments =
+            await getSheetData("DEPARTMENTS");
 
 
-            if (firstLetter) {
-
-                document.getElementById("userInitial").textContent =
-                    firstLetter;
-
-            }
-
-        }
+        const users =
+            await getSheetData("USERS");
 
 
-        if (userData.UserType) {
+        document.getElementById(
+            "studentCount"
+        ).textContent =
+            students.length;
 
-            document.getElementById("userRole").textContent =
-                userData.UserType;
 
-        }
+        document.getElementById(
+            "facultyCount"
+        ).textContent =
+            faculty.length;
+
+
+        document.getElementById(
+            "departmentCount"
+        ).textContent =
+            departments.length;
+
+
+        document.getElementById(
+            "userCount"
+        ).textContent =
+            users.length;
 
 
     } catch (error) {
 
         console.error(
-            "Invalid ERP user session:",
+            "Dashboard data error:",
             error
         );
 
-        sessionStorage.removeItem("erpUser");
+    }
 
-        window.location.href = "index.html";
+}
+
+
+/****************************************************
+ * GET SHEET DATA
+ ****************************************************/
+
+async function getSheetData(sheetName) {
+
+    const response =
+        await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify({
+
+                action: "get",
+
+                sheet: sheetName
+
+            })
+
+        });
+
+
+    const result =
+        await response.json();
+
+
+    if (!result.success) {
+
+        throw new Error(
+            result.error ||
+            "Unable to load " +
+            sheetName
+        );
 
     }
+
+
+    return result.data || [];
+
+}
+
+
+/****************************************************
+ * MODULE NAVIGATION
+ ****************************************************/
+
+function showModule(moduleName) {
+
+    if (moduleName === "Dashboard") {
+
+        location.reload();
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent =
+        moduleName;
+
+
+    const main =
+        document.getElementById(
+            "mainContent"
+        );
+
+
+    main.innerHTML = `
+
+        <div class="bg-white rounded-xl border border-slate-200 p-8 text-center">
+
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+
+                <span class="material-symbols-outlined text-indigo-600 text-3xl">
+                    construction
+                </span>
+
+            </div>
+
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                ${moduleName}
+            </h2>
+
+            <p class="text-slate-500 mb-6">
+                This module is ready to be connected to the ERP database.
+            </p>
+
+            <button
+                onclick="location.reload()"
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">
+
+                Back to Dashboard
+
+            </button>
+
+        </div>
+
+    `;
 
 }
 
@@ -1127,53 +1126,51 @@ if (savedUser) {
  ****************************************************/
 
 const menuButton =
-document.getElementById("menuButton");
+document.getElementById(
+    "menuButton"
+);
 
 const sidebar =
-document.getElementById("sidebar");
+document.getElementById(
+    "sidebar"
+);
 
 const overlay =
-document.getElementById("overlay");
+document.getElementById(
+    "overlay"
+);
 
 
-if (menuButton) {
+menuButton.addEventListener(
+    "click",
+    function() {
 
-    menuButton.addEventListener(
-        "click",
-        function() {
+        sidebar.classList.remove(
+            "-translate-x-full"
+        );
 
-            sidebar.classList.remove(
-                "-translate-x-full"
-            );
+        overlay.classList.remove(
+            "hidden"
+        );
 
-            overlay.classList.remove(
-                "hidden"
-            );
-
-        }
-    );
-
-}
+    }
+);
 
 
-if (overlay) {
+overlay.addEventListener(
+    "click",
+    function() {
 
-    overlay.addEventListener(
-        "click",
-        function() {
+        sidebar.classList.add(
+            "-translate-x-full"
+        );
 
-            sidebar.classList.add(
-                "-translate-x-full"
-            );
+        overlay.classList.add(
+            "hidden"
+        );
 
-            overlay.classList.add(
-                "hidden"
-            );
-
-        }
-    );
-
-}
+    }
+);
 
 
 /****************************************************
@@ -1182,7 +1179,9 @@ if (overlay) {
 
 function logout() {
 
-    sessionStorage.removeItem("erpUser");
+    sessionStorage.removeItem(
+        "erpUser"
+    );
 
     window.location.href =
         "index.html";
@@ -1191,15 +1190,12 @@ function logout() {
 
 
 /****************************************************
- * TEMPORARY BUTTON MESSAGE
+ * START DASHBOARD
  ****************************************************/
 
-function showComingSoon(moduleName) {
+if (currentUser) {
 
-    alert(
-        moduleName +
-        " module will be connected to the ERP database next."
-    );
+    loadDashboardData();
 
 }
 
@@ -1207,5 +1203,5 @@ function showComingSoon(moduleName) {
 
 
 </body>
+
 </html>
-```
