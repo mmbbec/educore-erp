@@ -1,761 +1,130 @@
 /****************************************************
- * EDUCATION ERP - GOOGLE APPS SCRIPT BACKEND
- * COMPLETE CODE - STEP 42B
- *
- * Spreadsheet-bound Apps Script
- ****************************************************/
-
-/****************************************************
- * GET SPREADSHEET
- ****************************************************/
-function getSpreadsheet() {
-  return SpreadsheetApp.getActiveSpreadsheet();
-}
-
-/****************************************************
- * GET SHEET
- ****************************************************/
-function getSheet(sheetName) {
-  const ss = getSpreadsheet();
-  const sheet = ss.getSheetByName(sheetName);
-  if (!sheet) {
-    throw new Error("Sheet not found: " + sheetName);
-  }
-  return sheet;
-}
-
-/****************************************************
- * GET HEADERS
- ****************************************************/
-function getHeaders(sheet) {
-  const lastColumn = sheet.getLastColumn();
-  if (lastColumn === 0) {
-    return [];
-  }
-  return sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-}
-
-/****************************************************
- * GET ALL RECORDS
- ****************************************************/
-function getAllRecords(sheetName) {
-  const sheet = getSheet(sheetName);
-  const lastRow = sheet.getLastRow();
-  const lastColumn = sheet.getLastColumn();
-
-  if (lastRow < 2 || lastColumn === 0) {
-    return [];
-  }
-
-  const headers = getHeaders(sheet);
-  const values = sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-
-  return values.map(function(row) {
-    const record = {};
-    headers.forEach(function(header, index) {
-      record[header] = row[index];
-    });
-    return record;
-  });
-}
-
-/****************************************************
- * GET DATA
- ****************************************************/
-function getData(sheetName) {
-  try {
-    return {
-      success: true,
-      data: getAllRecords(sheetName)
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message
-    };
-  }
-}
-
-/****************************************************
- * ADD RECORD
- ****************************************************/
-function addRecord(sheetName, record) {
-  const sheet = getSheet(sheetName);
-  const headers = getHeaders(sheet);
-
-  const row = headers.map(function(header) {
-    if (record && record[header] !== undefined) {
-      return record[header];
-    }
-    return "";
-  });
-
-  sheet.appendRow(row);
-
-  return {
-    success: true,
-    message: "Record added successfully"
-  };
-}
-
-/****************************************************
- * UPDATE RECORD
- ****************************************************/
-function updateRecord(sheetName, rowNumber, record) {
-  const sheet = getSheet(sheetName);
-  const headers = getHeaders(sheet);
-
-  const row = headers.map(function(header) {
-    if (record && record[header] !== undefined) {
-      return record[header];
-    }
-    return "";
-  });
-
-  sheet.getRange(rowNumber, 1, 1, headers.length).setValues([row]);
-
-  return {
-    success: true,
-    message: "Record updated successfully"
-  };
-}
-
-/****************************************************
- * DELETE RECORD
- ****************************************************/
-function deleteRecord(sheetName, rowNumber) {
-  const sheet = getSheet(sheetName);
-  sheet.deleteRow(rowNumber);
-
-  return {
-    success: true,
-    message: "Record deleted successfully"
-  };
-}
-
-/****************************************************
- * GET REQUEST
- ****************************************************/
-function doGet(e) {
-  return jsonResponse({
-    success: true,
-    message: "Education ERP API is running",
-    version: "1.1",
-    timestamp: new Date().toISOString()
-  });
-}
-
-/****************************************************
- * POST REQUEST
- ****************************************************/
-function doPost(e) {
-  try {
-    if (!e || !e.postData || !e.postData.contents) {
-      return jsonResponse({
-        success: false,
-        error: "No POST data received"
-      });
-    }
-
-    const request = JSON.parse(e.postData.contents);
-    const action = request.action;
-
-    if (action === "dashboard") {
-      return jsonResponse(getAdminDashboardData());
-    }
-
-    if (action === "login") {
-      return jsonResponse(
-        loginUser(request.email, request.password, request.role)
-      );
-    }
-
-    if (action === "get") {
-      return jsonResponse(getData(request.sheet));
-    }
-
-    if (action === "add") {
-      return jsonResponse(addRecord(request.sheet, request.data));
-    }
-
-    if (action === "update") {
-      return jsonResponse(
-        updateRecord(request.sheet, request.row, request.data)
-      );
-    }
-
-    if (action === "delete") {
-      return jsonResponse(deleteRecord(request.sheet, request.row));
-    }
-
-    return jsonResponse({
-      success: false,
-      error: "Invalid action: " + action
-    });
-
-  } catch (error) {
-    return jsonResponse({
-      success: false,
-      error: error.message
-    });
-  }
-}
-
-/****************************************************
- * JSON RESPONSE HELPER
- ****************************************************/
-function jsonResponse(data) {
-  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(
-    ContentService.MimeType.JSON
-  );
-}
-
-/****************************************************
- * CREATE ERP DATABASE
- ****************************************************/
-function setupERPDatabase() {
-  const ss = getSpreadsheet();
-
-  const headers = {
-    USERS: [
-      "UserID", "Name", "Email", "Mobile", "UserType", "RoleID",
-      "DepartmentID", "Status", "CreatedDate", "LastLogin", "PasswordHash"
-    ],
-    ROLES: ["RoleID", "RoleName", "Description", "Status", "CreatedDate"],
-    PERMISSIONS: [
-      "PermissionID", "RoleID", "Module", "CanView", "CanCreate",
-      "CanEdit", "CanDelete", "CanApprove", "CanExport", "CanConfigure"
-    ],
-    STUDENTS: [
-      "StudentID", "AdmissionNo", "Name", "Gender", "DOB", "Email",
-      "Mobile", "ParentID", "DepartmentID", "ProgramID", "AcademicYear",
-      "Semester", "Section", "AdmissionDate", "Status"
-    ],
-    PARENTS: [
-      "ParentID", "Name", "Email", "Mobile", "Relationship",
-      "StudentID", "VerificationStatus", "Status"
-    ],
-    FACULTY: [
-      "FacultyID", "EmployeeID", "Name", "Email", "Mobile",
-      "DepartmentID", "Designation", "RoleID", "JoiningDate", "Status"
-    ],
-    STAFF: [
-      "StaffID", "EmployeeID", "Name", "Email", "Mobile",
-      "DepartmentID", "Designation", "JoiningDate", "Status"
-    ],
-    DEPARTMENTS: ["DepartmentID", "DepartmentName", "DepartmentCode", "HODFacultyID", "Status"],
-    PROGRAMS: ["ProgramID", "ProgramName", "ProgramCode", "DegreeType", "Duration", "DepartmentID", "Regulation", "Status"],
-    ACADEMIC_YEARS: ["AcademicYearID", "AcademicYear", "StartDate", "EndDate", "Status"],
-    SEMESTERS: ["SemesterID", "AcademicYearID", "Semester", "StartDate", "EndDate", "RegistrationStart", "RegistrationEnd", "ExamStart", "ExamEnd", "Status"],
-    COURSES: ["CourseID", "CourseCode", "CourseName", "ProgramID", "DepartmentID", "SemesterID", "Credits", "LTP", "CourseType", "Status"],
-    SUBJECTS: ["SubjectID", "SubjectCode", "SubjectName", "CourseID", "DepartmentID", "SemesterID", "Credits", "TheoryHours", "PracticalHours", "InternalMarks", "ExternalMarks", "PassingMarks", "Status"],
-    COURSE_ALLOCATION: ["AllocationID", "CourseID", "SubjectID", "FacultyID", "AcademicYearID", "SemesterID", "SectionID", "Role", "Hours", "Status"],
-    SECTIONS: ["SectionID", "ProgramID", "SemesterID", "AcademicYearID", "SectionName", "Capacity", "ClassAdvisorID", "Status"],
-    TIMETABLE: ["TimetableID", "AcademicYearID", "SemesterID", "SectionID", "CourseID", "SubjectID", "FacultyID", "Day", "StartTime", "EndTime", "Room", "Status"],
-    ATTENDANCE: ["AttendanceID", "StudentID", "CourseID", "SubjectID", "FacultyID", "Date", "Status", "Period", "Remarks"],
-    ASSIGNMENTS: ["AssignmentID", "CourseID", "SubjectID", "FacultyID", "Title", "Description", "AssignedDate", "DueDate", "MaximumMarks", "Status"],
-    ASSESSMENTS: ["AssessmentID", "CourseID", "SubjectID", "AssessmentType", "AssessmentName", "Date", "MaximumMarks", "Weightage", "CO", "Status"],
-    MARKS: ["MarkID", "AssessmentID", "StudentID", "CourseID", "SubjectID", "Marks", "MaximumMarks", "CO", "Status"],
-    RESULTS: ["ResultID", "StudentID", "AcademicYearID", "SemesterID", "CourseID", "SubjectID", "Marks", "Grade", "GradePoint", "Credits", "SGPA", "CGPA", "ResultStatus"],
-    CO_PO_MAPPING: ["MappingID", "CourseID", "CO", "PO", "PSO", "MappingLevel"],
-    CO_ATTAINMENT: ["AttainmentID", "CourseID", "SubjectID", "CO", "Target", "DirectAttainment", "IndirectAttainment", "FinalAttainment", "Gap", "Status"],
-    PO_ATTAINMENT: ["POAttainmentID", "ProgramID", "AcademicYearID", "PO", "Target", "Attainment", "Gap", "Status"],
-    FEES: ["FeeID", "StudentID", "AcademicYearID", "FeeCategory", "Amount", "DueDate", "PaidAmount", "Balance", "Status"],
-    PAYMENTS: ["PaymentID", "FeeID", "StudentID", "Amount", "PaymentDate", "PaymentMode", "TransactionID", "ReceiptNo", "Status"],
-    LIBRARY: ["LibraryTransactionID", "StudentID", "FacultyID", "BookID", "IssueDate", "DueDate", "ReturnDate", "Fine", "Status"],
-    HOSTEL: ["HostelAllocationID", "StudentID", "HostelID", "RoomNo", "BedNo", "AllocationDate", "CheckoutDate", "FeeStatus", "Status"],
-    TRANSPORT: ["TransportID", "StudentID", "RouteID", "VehicleID", "StartDate", "EndDate", "FeeStatus", "Status"],
-    INVENTORY: ["AssetID", "AssetName", "Category", "DepartmentID", "PurchaseDate", "Quantity", "Value", "Condition", "Status"],
-    EVENTS: ["EventID", "EventName", "Category", "DepartmentID", "StartDate", "EndDate", "Venue", "CoordinatorID", "Status"],
-    PLACEMENT: ["PlacementID", "StudentID", "Company", "JobTitle", "ApplicationDate", "SelectionStatus", "Package", "JoiningDate", "Status"],
-    ALUMNI: ["AlumniID", "StudentID", "Name", "GraduationYear", "Email", "Mobile", "Company", "Designation", "Location", "Status"],
-    DOCUMENTS: ["DocumentID", "OwnerType", "OwnerID", "DocumentType", "FileName", "FileURL", "UploadedBy", "UploadedDate", "AccessLevel", "Status"],
-    CERTIFICATES: ["CertificateID", "StudentID", "CertificateType", "CertificateNo", "IssueDate", "IssuedBy", "FileURL", "Status"],
-    NOTIFICATIONS: ["NotificationID", "UserID", "Title", "Message", "Category", "Priority", "CreatedDate", "ReadStatus", "Status"],
-    APPROVALS: ["ApprovalID", "Module", "RecordID", "RequestType", "SubmittedBy", "ApproverID", "SubmittedDate", "DecisionDate", "Remarks", "Status"],
-    REPORTS: ["ReportID", "ReportName", "Module", "CreatedBy", "CreatedDate", "DataPeriod", "FileURL", "Status"],
-    AUDIT_LOG: ["AuditID", "UserID", "Action", "Module", "RecordID", "DateTime", "Result", "Details"],
-    SETTINGS: ["SettingID", "Category", "SettingName", "SettingValue", "Description", "Status"]
-  };
-
-  Object.keys(headers).forEach(function(sheetName) {
-    let sheet = ss.getSheetByName(sheetName);
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-    }
-    sheet.clear();
-    const row = headers[sheetName];
-    sheet.getRange(1, 1, 1, row.length).setValues([row]);
-    sheet.getRange(1, 1, 1, row.length).setFontWeight("bold");
-    sheet.setFrozenRows(1);
-    sheet.autoResizeColumns(1, row.length);
-  });
-
-  SpreadsheetApp.getUi().alert("Education ERP database created successfully.");
-}
-
-/****************************************************
- * SETUP ROLES & PERMISSIONS
- ****************************************************/
-function setupInitialRoles() {
-  const ss = getSpreadsheet();
-  const rolesSheet = ss.getSheetByName("ROLES");
-  const permissionsSheet = ss.getSheetByName("PERMISSIONS");
-
-  if (!rolesSheet) throw new Error("ROLES sheet not found.");
-  if (!permissionsSheet) throw new Error("PERMISSIONS sheet not found.");
-
-  if (rolesSheet.getLastRow() > 1) {
-    rolesSheet.getRange(2, 1, rolesSheet.getLastRow() - 1, rolesSheet.getLastColumn()).clearContent();
-  }
-
-  if (permissionsSheet.getLastRow() > 1) {
-    permissionsSheet.getRange(2, 1, permissionsSheet.getLastRow() - 1, permissionsSheet.getLastColumn()).clearContent();
-  }
-
-  const roles = [
-    ["R001", "System Admin", "Full system administration", "Active", new Date()],
-    ["R002", "Admin", "Administrative management", "Active", new Date()],
-    ["R003", "Principal", "Institution level access", "Active", new Date()],
-    ["R004", "HOD", "Department level access", "Active", new Date()],
-    ["R005", "Faculty", "Teaching and academic access", "Active", new Date()],
-    ["R006", "Student", "Student self-service access", "Active", new Date()],
-    ["R007", "Parent", "Linked student parent access", "Active", new Date()],
-    ["R008", "Accountant", "Finance access", "Active", new Date()],
-    ["R009", "Librarian", "Library access", "Active", new Date()],
-    ["R010", "HR", "HR management access", "Active", new Date()],
-    ["R011", "Warden", "Hostel management access", "Active", new Date()],
-    ["R012", "Transport Admin", "Transport management access", "Active", new Date()],
-    ["R013", "Placement Officer", "Placement management access", "Active", new Date()]
-  ];
-
-  rolesSheet.getRange(2, 1, roles.length, roles[0].length).setValues(roles);
-
-  const modules = [
-    "Dashboard", "Admissions", "Students", "Parents", "Faculty", "Staff", "HR",
-    "Academics", "Courses", "Subjects", "Timetable", "Attendance", "Assignments",
-    "Assessment", "Examination", "Results", "CO-PO", "Finance", "Library", "Hostel",
-    "Transport", "Inventory", "Events", "Placement", "Alumni", "Documents",
-    "Certificates", "Notifications", "Approvals", "Reports", "Analytics",
-    "Security", "Settings"
-  ];
-
-  const permissionRows = [];
-
-  roles.forEach(function(role) {
-    const roleId = role[0];
-    const roleName = role[1];
-
-    modules.forEach(function(module) {
-      let view = false, create = false, edit = false, del = false, approve = false, exportData = false, configure = false;
-
-      if (roleName === "System Admin") {
-        view = create = edit = del = approve = exportData = configure = true;
-      } else if (roleName === "Admin") {
-        view = true;
-        if (module !== "Security" && module !== "Settings") {
-          create = edit = true;
-        }
-        if (["Students", "Faculty", "Staff", "Admissions", "Documents", "Certificates"].includes(module)) {
-          del = true;
-        }
-        if (["Admissions", "Documents", "Certificates", "Approvals"].includes(module)) {
-          approve = true;
-        }
-        if (["Reports", "Analytics", "Students", "Faculty", "Finance"].includes(module)) {
-          exportData = true;
-        }
-      } else if (roleName === "Principal") {
-        view = true;
-        if (["Admissions", "Approvals", "Documents", "Certificates", "Events"].includes(module)) {
-          approve = true;
-        }
-        if (["Reports", "Analytics", "Students", "Faculty", "Attendance", "Results", "Finance", "CO-PO"].includes(module)) {
-          exportData = true;
-        }
-      } else if (roleName === "HOD") {
-        if (["Dashboard", "Students", "Faculty", "Academics", "Courses", "Subjects", "Timetable", "Attendance", "Assignments", "Assessment", "Examination", "Results", "CO-PO", "Documents", "Approvals", "Reports", "Analytics"].includes(module)) {
-          view = true;
-        }
-        if (["Courses", "Subjects", "Timetable", "Assignments", "Documents"].includes(module)) {
-          create = edit = true;
-        }
-        if (["Approvals", "Documents"].includes(module)) {
-          approve = true;
-        }
-        if (["Students", "Faculty", "Attendance", "Results", "Reports", "Analytics", "CO-PO"].includes(module)) {
-          exportData = true;
-        }
-      } else if (roleName === "Faculty") {
-        if (["Dashboard", "Students", "Academics", "Courses", "Subjects", "Timetable", "Attendance", "Assignments", "Assessment", "Examination", "Results", "CO-PO", "Documents", "Notifications"].includes(module)) {
-          view = true;
-        }
-        if (["Attendance", "Assignments", "Assessment", "Marks", "Documents"].includes(module)) {
-          create = edit = true;
-        }
-        if (["Attendance", "Results", "CO-PO", "Documents"].includes(module)) {
-          exportData = true;
-        }
-      } else if (roleName === "Student") {
-        if (["Dashboard", "Students", "Academics", "Courses", "Subjects", "Timetable", "Attendance", "Assignments", "Assessment", "Examination", "Results", "Documents", "Certificates", "Notifications", "Placement", "Library", "Hostel", "Transport", "Finance"].includes(module)) {
-          view = true;
-        }
-        if (["Assignments", "Documents"].includes(module)) {
-          create = true;
-        }
-      } else if (roleName === "Parent") {
-        if (["Dashboard", "Students", "Attendance", "Assignments", "Examination", "Results", "Finance", "Documents", "Certificates", "Notifications", "Hostel", "Transport"].includes(module)) {
-          view = true;
-        }
-      } else if (roleName === "Accountant") {
-        if (["Dashboard", "Students", "Finance", "Reports", "Notifications"].includes(module)) {
-          view = true;
-        }
-        if (module === "Finance") {
-          create = edit = approve = exportData = true;
-        }
-      } else if (roleName === "Librarian") {
-        if (["Dashboard", "Students", "Faculty", "Library", "Reports"].includes(module)) {
-          view = true;
-        }
-        if (module === "Library") {
-          create = edit = exportData = true;
-        }
-      } else if (roleName === "HR") {
-        if (["Dashboard", "Faculty", "Staff", "HR", "Documents", "Reports"].includes(module)) {
-          view = true;
-        }
-        if (["Faculty", "Staff", "HR", "Documents"].includes(module)) {
-          create = edit = true;
-        }
-      } else if (roleName === "Warden") {
-        if (["Dashboard", "Students", "Hostel", "Finance", "Reports", "Notifications"].includes(module)) {
-          view = true;
-        }
-        if (module === "Hostel") {
-          create = edit = approve = true;
-        }
-      } else if (roleName === "Transport Admin") {
-        if (["Dashboard", "Students", "Transport", "Finance", "Reports", "Notifications"].includes(module)) {
-          view = true;
-        }
-        if (module === "Transport") {
-          create = edit = approve = true;
-        }
-      } else if (roleName === "Placement Officer") {
-        if (["Dashboard", "Students", "Placement", "Documents", "Reports", "Notifications"].includes(module)) {
-          view = true;
-        }
-        if (module === "Placement") {
-          create = edit = approve = exportData = true;
-        }
-      }
-
-      permissionRows.push([
-        "P" + String(permissionRows.length + 1).padStart(4, "0"),
-        roleId, module, view, create, edit, del, approve, exportData, configure
-      ]);
-    });
-  });
-
-  if (permissionRows.length > 0) {
-    permissionsSheet.getRange(2, 1, permissionRows.length, permissionRows[0].length).setValues(permissionRows);
-  }
-
-  SpreadsheetApp.getUi().alert("Initial ERP roles and permissions created successfully.");
-}
-
-/****************************************************
- * CREATE TEST USERS
- ****************************************************/
-function createTestUsers() {
-  const sheet = getSheet("USERS");
-
-  const users = [
-    ["U001", "System Administrator", "admin@example.com", "", "Admin", "R001", "", "Active", new Date(), "", "Admin@123"],
-    ["U002", "Principal", "principal@example.com", "", "Principal", "R003", "", "Active", new Date(), "", "Principal@123"],
-    ["U003", "HOD", "hod@example.com", "", "HOD", "R004", "", "Active", new Date(), "", "HOD@123"],
-    ["U004", "Faculty", "faculty@example.com", "", "Faculty", "R005", "", "Active", new Date(), "", "Faculty@123"],
-    ["U005", "Student", "student@example.com", "", "Student", "R006", "", "Active", new Date(), "", "Student@123"],
-    ["U006", "Parent", "parent@example.com", "", "Parent", "R007", "", "Active", new Date(), "", "Parent@123"]
-  ];
-
-  if (sheet.getLastRow() > 1) {
-    sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
-  }
-
-  sheet.getRange(2, 1, users.length, users[0].length).setValues(users);
-  SpreadsheetApp.getUi().alert("Test ERP users created successfully.");
-}
-
-/****************************************************
- * ERP LOGIN API
- ****************************************************/
-function loginUser(email, password, selectedRole) {
-  try {
-    if (!email) return { success: false, error: "Email is required" };
-    if (!password) return { success: false, error: "Password is required" };
-    if (!selectedRole) return { success: false, error: "Role is required" };
-
-    email = String(email).trim().toLowerCase();
-    password = String(password).trim();
-    selectedRole = String(selectedRole).trim().toLowerCase();
-
-    const sheet = getSheet("USERS");
-    const data = sheet.getDataRange().getValues();
-
-    if (data.length < 2) {
-      return { success: false, error: "No users found" };
-    }
-
-    const headers = data[0];
-
-    for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      const user = {};
-
-      headers.forEach(function(header, index) {
-        user[header] = row[index];
-      });
-
-      const userEmail = String(user.Email || "").trim().toLowerCase();
-      if (userEmail !== email) continue;
-
-      const userStatus = String(user.Status || "").trim().toLowerCase();
-      if (userStatus !== "active") {
-        return { success: false, error: "Your ERP account is inactive." };
-      }
-
-      const userRole = String(user.UserType || "").trim().toLowerCase();
-      if (userRole !== selectedRole) {
-        return { success: false, error: "Incorrect role selected." };
-      }
-
-      const storedPassword = String(user.PasswordHash || "").trim();
-      if (!storedPassword) {
-        return { success: false, error: "Password is not configured for this account." };
-      }
-
-      if (storedPassword !== password) {
-        return { success: false, error: "Invalid email or password." };
-      }
-
-      // Update Last Login timestamp (Column 10)
-      sheet.getRange(i + 1, 10).setValue(new Date());
-
-      return {
-        success: true,
-        message: "Login successful.",
-        user: {
-          UserID: user.UserID,
-          Name: user.Name,
-          Email: user.Email,
-          Mobile: user.Mobile,
-          UserType: user.UserType,
-          RoleID: user.RoleID,
-          DepartmentID: user.DepartmentID,
-          Status: user.Status
-        }
-      };
-    }
-
-    return { success: false, error: "Email is not registered in the ERP." };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-}
-
-/****************************************************
  * ADMIN DASHBOARD DATA
+ * Reads students directly from STUDENTS sheet
  ****************************************************/
+
 function getAdminDashboardData() {
+
   try {
+
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
     const studentsSheet = ss.getSheetByName("STUDENTS");
     const facultySheet = ss.getSheetByName("FACULTY");
-    const attendanceSheet = ss.getSheetByName("ATTENDANCE");
-    const feesSheet = ss.getSheetByName("FEES");
-    const departmentsSheet = ss.getSheetByName("DEPARTMENTS");
-    const notificationsSheet = ss.getSheetByName("NOTIFICATIONS");
 
-    let totalStudents = 0;
-    let totalFaculty = 0;
-    let attendanceToday = 0;
-    let totalFees = 0;
-    let paidFees = 0;
-    let balanceFees = 0;
-    const departments = [];
-    const notifications = [];
+    let students = 0;
+    let faculty = 0;
 
-    // Students Count
+    /************************************************
+     * STUDENTS
+     ************************************************/
+
     if (studentsSheet) {
+
       const data = studentsSheet.getDataRange().getValues();
+
       if (data.length > 1) {
+
         const headers = data[0];
+
         const statusIndex = headers.indexOf("Status");
 
         for (let i = 1; i < data.length; i++) {
-          if (data[i].every(val => String(val).trim() === "")) continue;
 
+          // Ignore completely empty rows
+          if (
+            data[i].every(function(value) {
+              return String(value).trim() === "";
+            })
+          ) {
+            continue;
+          }
+
+          // If Status column exists
           if (statusIndex !== -1) {
-            const status = String(data[i][statusIndex]).trim().toLowerCase();
-            if (status === "active" || status === "") {
-              totalStudents++;
+
+            const status =
+              String(data[i][statusIndex])
+              .trim()
+              .toLowerCase();
+
+            if (
+              status === "active" ||
+              status === ""
+            ) {
+              students++;
             }
+
           } else {
-            totalStudents++;
+
+            // Count student if no Status column
+            students++;
+
           }
+
         }
+
       }
+
     }
 
-    // Faculty Count
+
+    /************************************************
+     * FACULTY
+     ************************************************/
+
     if (facultySheet) {
+
       const data = facultySheet.getDataRange().getValues();
+
       if (data.length > 1) {
+
         for (let i = 1; i < data.length; i++) {
-          if (String(data[i][0]).trim() !== "") {
-            totalFaculty++;
+
+          if (
+            String(data[i][0]).trim() !== ""
+          ) {
+
+            faculty++;
+
           }
+
         }
+
       }
+
     }
 
-    // Attendance Today Calculation
-    if (attendanceSheet) {
-      const lastRow = attendanceSheet.getLastRow();
-      const lastColumn = attendanceSheet.getLastColumn();
 
-      if (lastRow > 1 && lastColumn > 0) {
-        const headers = attendanceSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-        const dateIndex = headers.indexOf("Date");
-        const statusIndex = headers.indexOf("Status");
-
-        if (dateIndex >= 0 && statusIndex >= 0) {
-          const data = attendanceSheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-          let present = 0;
-          let total = 0;
-
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-
-          data.forEach(function(row) {
-            if (!row[dateIndex]) return;
-            const recordDate = new Date(row[dateIndex]);
-            recordDate.setHours(0, 0, 0, 0);
-
-            if (recordDate.getTime() === today.getTime()) {
-              total++;
-              const status = String(row[statusIndex] || "").trim().toLowerCase();
-              if (status === "present" || status === "p") {
-                present++;
-              }
-            }
-          });
-
-          if (total > 0) {
-            attendanceToday = Number(((present / total) * 100).toFixed(1));
-          }
-        }
-      }
-    }
-
-    // Fees Totals
-    if (feesSheet) {
-      const lastRow = feesSheet.getLastRow();
-      const lastColumn = feesSheet.getLastColumn();
-
-      if (lastRow > 1 && lastColumn > 0) {
-        const headers = feesSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-        const amountIndex = headers.indexOf("Amount");
-        const paidIndex = headers.indexOf("PaidAmount");
-        const balanceIndex = headers.indexOf("Balance");
-
-        const data = feesSheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-        data.forEach(function(row) {
-          if (amountIndex >= 0) totalFees += Number(row[amountIndex]) || 0;
-          if (paidIndex >= 0) paidFees += Number(row[paidIndex]) || 0;
-          if (balanceIndex >= 0) balanceFees += Number(row[balanceIndex]) || 0;
-        });
-      }
-    }
-
-    // Departments List
-    if (departmentsSheet) {
-      const lastRow = departmentsSheet.getLastRow();
-      const lastColumn = departmentsSheet.getLastColumn();
-
-      if (lastRow > 1 && lastColumn > 0) {
-        const headers = departmentsSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-        const idIndex = headers.indexOf("DepartmentID");
-        const nameIndex = headers.indexOf("DepartmentName");
-        const codeIndex = headers.indexOf("DepartmentCode");
-        const statusIndex = headers.indexOf("Status");
-
-        const data = departmentsSheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-        data.forEach(function(row) {
-          const deptID = idIndex >= 0 ? row[idIndex] : "";
-          const deptName = nameIndex >= 0 ? row[nameIndex] : "";
-
-          if (String(deptID).trim() === "" && String(deptName).trim() === "") return;
-
-          departments.push({
-            DepartmentID: deptID,
-            DepartmentName: deptName,
-            DepartmentCode: codeIndex >= 0 ? row[codeIndex] : "",
-            Status: statusIndex >= 0 ? row[statusIndex] : ""
-          });
-        });
-      }
-    }
-
-    // Recent 5 Notifications
-    if (notificationsSheet) {
-      const lastRow = notificationsSheet.getLastRow();
-      const lastColumn = notificationsSheet.getLastColumn();
-
-      if (lastRow > 1 && lastColumn > 0) {
-        const headers = notificationsSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-        const titleIndex = headers.indexOf("Title");
-        const messageIndex = headers.indexOf("Message");
-        const categoryIndex = headers.indexOf("Category");
-        const priorityIndex = headers.indexOf("Priority");
-        const dateIndex = headers.indexOf("CreatedDate");
-
-        const data = notificationsSheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
-        const start = Math.max(0, data.length - 5);
-
-        for (let i = start; i < data.length; i++) {
-          notifications.push({
-            Title: titleIndex >= 0 ? data[i][titleIndex] : "",
-            Message: messageIndex >= 0 ? data[i][messageIndex] : "",
-            Category: categoryIndex >= 0 ? data[i][categoryIndex] : "",
-            Priority: priorityIndex >= 0 ? data[i][priorityIndex] : "",
-            CreatedDate: dateIndex >= 0 ? data[i][dateIndex] : ""
-          });
-        }
-      }
-    }
+    /************************************************
+     * RETURN
+     ************************************************/
 
     return {
+
       success: true,
-      dashboard: {
-        totalStudents: totalStudents,
-        totalFaculty: totalFaculty,
-        attendanceToday: attendanceToday,
-        totalFees: totalFees,
-        paidFees: paidFees,
-        balanceFees: balanceFees,
-        departments: departments,
-        notifications: notifications
-      }
+
+      students: students,
+
+      faculty: faculty,
+
+      attendance: 0,
+
+      fees: 0
+
     };
+
 
   } catch (error) {
+
     return {
+
       success: false,
+
       error: error.toString()
+
     };
+
   }
+
 }
