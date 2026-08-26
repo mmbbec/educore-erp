@@ -375,330 +375,536 @@ Contact IT Support
 
 <script>
 
-/************************************************
- * DEMO USERS
- *
- * TEMPORARY ONLY
- ************************************************/
+<script>
 
-const users = [
+/****************************************************
+ * EDUCORE ERP
+ * STEP 36 - GITHUB LOGIN CONNECTED TO GOOGLE SHEET
+ ****************************************************/
 
-{
-email: "admin@educore.edu",
-password: "Admin@123",
-role: "Admin",
-name: "System Administrator"
-},
-
-{
-email: "faculty@educore.edu",
-password: "Faculty@123",
-role: "Faculty",
-name: "Demo Faculty"
-},
-
-{
-email: "student@educore.edu",
-password: "Student@123",
-role: "Student",
-name: "Demo Student"
-},
-
-{
-email: "parent@educore.edu",
-password: "Parent@123",
-role: "Parent",
-name: "Demo Parent"
-}
-
-];
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzPmWkPj_2OIXoW9Mbfip_DZG3Plst7qwzbur11ohTvRdY2qg0xU1Fsp5ifZbBUaXK7ow/exec";
 
 
-/************************************************
+/****************************************************
  * SELECTED ROLE
- ************************************************/
+ ****************************************************/
 
 let selectedRole = "Admin";
 
 
-/************************************************
+/****************************************************
  * ROLE BUTTONS
- ************************************************/
+ ****************************************************/
 
 document
 .querySelectorAll(".role-button")
 .forEach(function(button) {
 
-button.addEventListener("click", function() {
+    button.addEventListener("click", function() {
 
-selectedRole =
-button.dataset.role;
+        selectedRole = button.dataset.role;
 
+        document
+        .querySelectorAll(".role-button")
+        .forEach(function(btn) {
 
-document
-.querySelectorAll(".role-button")
-.forEach(function(btn) {
+            btn.classList.remove("role-active");
 
-btn.classList.remove("role-active");
+            btn.classList.add(
+                "bg-slate-100",
+                "text-slate-800"
+            );
 
-btn.classList.add(
-"bg-slate-100",
-"text-slate-800"
-);
+        });
 
-});
+        button.classList.add("role-active");
 
+        button.classList.remove(
+            "bg-slate-100",
+            "text-slate-800"
+        );
 
-button.classList.add("role-active");
-
-button.classList.remove(
-"bg-slate-100",
-"text-slate-800"
-);
-
-});
+    });
 
 });
 
 
-/************************************************
+/****************************************************
  * PASSWORD VISIBILITY
- ************************************************/
+ ****************************************************/
 
 document
 .getElementById("togglePassword")
 .addEventListener("click", function() {
 
-const password =
-document.getElementById("password");
+    const password =
+        document.getElementById("password");
 
-const icon =
-document.getElementById("passwordIcon");
+    const icon =
+        document.getElementById("passwordIcon");
 
+    if (password.type === "password") {
 
-if(password.type === "password") {
+        password.type = "text";
 
-password.type = "text";
+        icon.textContent = "visibility";
 
-icon.textContent = "visibility";
+    } else {
 
-} else {
+        password.type = "password";
 
-password.type = "password";
+        icon.textContent = "visibility_off";
 
-icon.textContent = "visibility_off";
-
-}
+    }
 
 });
 
 
-/************************************************
+/****************************************************
  * LOGIN
- ************************************************/
+ ****************************************************/
 
 document
 .getElementById("loginForm")
-.addEventListener("submit", function(event) {
+.addEventListener("submit", async function(event) {
 
-event.preventDefault();
-
-
-const email =
-document
-.getElementById("email")
-.value
-.trim()
-.toLowerCase();
+    event.preventDefault();
 
 
-const password =
-document
-.getElementById("password")
-.value;
+    const email =
+        document
+        .getElementById("email")
+        .value
+        .trim()
+        .toLowerCase();
 
 
-const user =
-users.find(function(u) {
+    const password =
+        document
+        .getElementById("password")
+        .value;
 
-return (
-u.email.toLowerCase() === email &&
-u.password === password
-);
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+
+    const loginText =
+        document.getElementById("loginText");
+
+
+    /************************************************
+     * VALIDATION
+     ************************************************/
+
+    if (!email || !password) {
+
+        showMessage(
+            "Please enter email and password.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    /************************************************
+     * BUTTON LOADING
+     ************************************************/
+
+    loginButton.disabled = true;
+
+    loginText.textContent = "Checking account...";
+
+
+    try {
+
+        /********************************************
+         * CALL GOOGLE APPS SCRIPT
+         ********************************************/
+
+        const response = await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify({
+
+                action: "login",
+
+                email: email
+
+            })
+
+        });
+
+
+        /********************************************
+         * READ RESPONSE
+         ********************************************/
+
+        const result =
+            await response.json();
+
+
+        /********************************************
+         * LOGIN FAILED
+         ********************************************/
+
+        if (!result.success) {
+
+            showMessage(
+                result.error ||
+                "Login failed.",
+                false
+            );
+
+            resetLoginButton();
+
+            return;
+
+        }
+
+
+        /********************************************
+         * USER RECEIVED FROM GOOGLE SHEET
+         ********************************************/
+
+        const user =
+            result.user;
+
+
+        /********************************************
+         * CHECK ROLE
+         ********************************************/
+
+        const roleMap = {
+
+            "System Admin": "Admin",
+
+            "Admin": "Admin",
+
+            "Principal": "Principal",
+
+            "HOD": "HOD",
+
+            "Faculty": "Faculty",
+
+            "Student": "Student",
+
+            "Parent": "Parent",
+
+            "Accountant": "Accountant",
+
+            "Librarian": "Librarian",
+
+            "HR": "HR",
+
+            "Warden": "Warden",
+
+            "Transport Admin": "Transport Admin",
+
+            "Placement Officer":
+                "Placement Officer"
+
+        };
+
+
+        const actualRole =
+            roleMap[user.UserType] ||
+            user.UserType;
+
+
+        if (actualRole !== selectedRole) {
+
+            showMessage(
+
+                "Wrong role selected. Your account is registered as " +
+                actualRole + ".",
+
+                false
+
+            );
+
+            resetLoginButton();
+
+            return;
+
+        }
+
+
+        /********************************************
+         * SAVE USER SESSION
+         ********************************************/
+
+        sessionStorage.setItem(
+
+            "erpUser",
+
+            JSON.stringify(user)
+
+        );
+
+
+        /********************************************
+         * REMEMBER EMAIL
+         ********************************************/
+
+        if (
+            document
+            .getElementById("rememberMe")
+            .checked
+        ) {
+
+            localStorage.setItem(
+                "erpRememberEmail",
+                email
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                "erpRememberEmail"
+            );
+
+        }
+
+
+        /********************************************
+         * LOGIN SUCCESS
+         ********************************************/
+
+        showMessage(
+
+            "Login successful. Opening dashboard...",
+
+            true
+
+        );
+
+
+        loginText.textContent =
+            "Opening Dashboard...";
+
+
+        /********************************************
+         * OPEN DASHBOARD
+         ********************************************/
+
+        setTimeout(function() {
+
+            redirectUser(actualRole);
+
+        }, 700);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+
+            "Unable to connect to ERP server. Please try again.",
+
+            false
+
+        );
+
+        resetLoginButton();
+
+    }
 
 });
 
 
-if(!user) {
-
-showMessage(
-"Invalid email or password.",
-false
-);
-
-return;
-
-}
-
-
-if(user.role !== selectedRole) {
-
-showMessage(
-"Please select the correct role for this account.",
-false
-);
-
-return;
-
-}
-
-
-/************************************************
- * SAVE SESSION
- ************************************************/
-
-sessionStorage.setItem(
-"erpUser",
-JSON.stringify(user)
-);
-
-
-if(
-document.getElementById("rememberMe").checked
-) {
-
-localStorage.setItem(
-"erpRememberEmail",
-email
-);
-
-}
-
-
-/************************************************
- * LOGIN SUCCESS
- ************************************************/
-
-showMessage(
-"Login successful. Opening dashboard...",
-true
-);
-
-
-setTimeout(function() {
-
-redirectUser(user.role);
-
-}, 700);
-
-});
-
-
-/************************************************
- * REDIRECT
- ************************************************/
+/****************************************************
+ * REDIRECT USER
+ ****************************************************/
 
 function redirectUser(role) {
 
-const pages = {
+    const pages = {
 
-Admin: "admin-dashboard.html",
+        "Admin":
+            "admin-dashboard.html",
 
-Faculty: "faculty-dashboard.html",
+        "Principal":
+            "principal-dashboard.html",
 
-Student: "student-dashboard.html",
+        "HOD":
+            "hod-dashboard.html",
 
-Parent: "parent-dashboard.html"
+        "Faculty":
+            "faculty-dashboard.html",
 
-};
+        "Student":
+            "student-dashboard.html",
+
+        "Parent":
+            "parent-dashboard.html",
+
+        "Accountant":
+            "accountant-dashboard.html",
+
+        "Librarian":
+            "librarian-dashboard.html",
+
+        "HR":
+            "hr-dashboard.html",
+
+        "Warden":
+            "warden-dashboard.html",
+
+        "Transport Admin":
+            "transport-dashboard.html",
+
+        "Placement Officer":
+            "placement-dashboard.html"
+
+    };
 
 
-window.location.href =
-pages[role];
+    const page = pages[role];
+
+
+    if (!page) {
+
+        showMessage(
+
+            "Dashboard for " +
+            role +
+            " is not created yet.",
+
+            false
+
+        );
+
+        resetLoginButton();
+
+        return;
+
+    }
+
+
+    window.location.href = page;
 
 }
 
 
-/************************************************
+/****************************************************
  * MESSAGE
- ************************************************/
+ ****************************************************/
 
 function showMessage(text, success) {
 
-const box =
-document.getElementById("message");
+    const box =
+        document.getElementById("message");
 
 
-box.classList.remove("hidden");
+    box.classList.remove("hidden");
 
 
-if(success) {
+    if (success) {
 
-box.className =
-"mb-4 p-3 rounded-lg text-sm bg-green-100 text-green-700";
+        box.className =
+            "mb-4 p-3 rounded-lg text-sm bg-green-100 text-green-700";
 
-} else {
+    } else {
 
-box.className =
-"mb-4 p-3 rounded-lg text-sm bg-red-100 text-red-700";
+        box.className =
+            "mb-4 p-3 rounded-lg text-sm bg-red-100 text-red-700";
+
+    }
+
+
+    box.textContent = text;
 
 }
 
 
-box.textContent = text;
+/****************************************************
+ * RESET LOGIN BUTTON
+ ****************************************************/
+
+function resetLoginButton() {
+
+    const loginButton =
+        document.getElementById("loginButton");
+
+    const loginText =
+        document.getElementById("loginText");
+
+
+    loginButton.disabled = false;
+
+    loginText.textContent =
+        "Login to Dashboard";
 
 }
 
 
-/************************************************
+/****************************************************
  * FORGOT PASSWORD
- ************************************************/
+ ****************************************************/
 
 function forgotPassword() {
 
-alert(
-"Password recovery will be connected later."
-);
+    alert(
+        "Password recovery will be connected later."
+    );
 
 }
 
 
-/************************************************
+/****************************************************
  * IT SUPPORT
- ************************************************/
+ ****************************************************/
 
 function contactSupport() {
 
-alert(
-"IT Support module will be connected later."
-);
+    alert(
+        "IT Support module will be connected later."
+    );
 
 }
 
 
-/************************************************
+/****************************************************
  * REMEMBER EMAIL
- ************************************************/
+ ****************************************************/
 
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-const savedEmail =
-localStorage.getItem(
-"erpRememberEmail"
+        const savedEmail =
+            localStorage.getItem(
+                "erpRememberEmail"
+            );
+
+
+        if (savedEmail) {
+
+            document
+            .getElementById("email")
+            .value = savedEmail;
+
+
+            document
+            .getElementById("rememberMe")
+            .checked = true;
+
+        }
+
+    }
 );
 
-
-if(savedEmail) {
-
-document.getElementById("email").value =
-savedEmail;
-
-document.getElementById("rememberMe").checked =
-true;
-
-}
-
-});
+</script>
 
 </script>
 
