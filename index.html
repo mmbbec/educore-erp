@@ -306,332 +306,56 @@ Contact IT Support
 
 
 <script>
-
-/****************************************************
- * EDUCORE ERP
- * TEMPORARY DIRECT LOGIN
- ****************************************************/
-
-const users = [
-
-{
-email: "admin@example.com",
-password: "Admin@123",
-role: "Admin",
-name: "System Administrator"
-},
-
-{
-email: "faculty@example.com",
-password: "Faculty@123",
-role: "Faculty",
-name: "Demo Faculty"
-},
-
-{
-email: "student@example.com",
-password: "Student@123",
-role: "Student",
-name: "Demo Student"
-},
-
-{
-email: "parent@example.com",
-password: "Parent@123",
-role: "Parent",
-name: "Demo Parent"
-}
-
-];
-
-
-let selectedRole = "Admin";
-
-
-/****************************************************
- * ROLE BUTTONS
- ****************************************************/
-
-document.querySelectorAll(".role-button").forEach(function(button) {
-
-button.addEventListener("click", function() {
-
-selectedRole = button.dataset.role;
-
-document.querySelectorAll(".role-button").forEach(function(btn) {
-
-btn.classList.remove("role-active");
-
-btn.classList.add(
-"bg-slate-100",
-"text-slate-800"
-);
-
-});
-
-button.classList.add("role-active");
-
-button.classList.remove(
-"bg-slate-100",
-"text-slate-800"
-);
-
-});
-
-});
-
-
-/****************************************************
- * PASSWORD SHOW / HIDE
- ****************************************************/
-
-document
-.getElementById("togglePassword")
-.addEventListener("click", function() {
-
-const password =
-document.getElementById("password");
-
-const icon =
-document.getElementById("passwordIcon");
-
-if(password.type === "password") {
-
-password.type = "text";
-
-icon.textContent = "visibility";
-
-} else {
-
-password.type = "password";
-
-icon.textContent = "visibility_off";
-
-}
-
-});
-
-
-/****************************************************
- * LOGIN
- ****************************************************/
-
-document
-.getElementById("loginForm")
-.addEventListener("submit", function(event) {
-
-event.preventDefault();
-
-const email =
-document.getElementById("email")
-.value
-.trim()
-.toLowerCase();
-
-const password =
-document.getElementById("password")
-.value;
-
-
-const user = users.find(function(u) {
-
-return (
-u.email.toLowerCase() === email &&
-u.password === password
-);
-
-});
-
-
-if(!user) {
-
-showMessage(
-"Invalid email or password.",
-false
-);
-
-return;
-
-}
-
-
-if(user.role !== selectedRole) {
-
-showMessage(
-"Please select the correct role.",
-false
-);
-
-return;
-
-}
-
-
-/****************************************************
- * SAVE SESSION
- ****************************************************/
-
-sessionStorage.setItem(
-"erpUser",
-JSON.stringify({
-email: user.email,
-name: user.name,
-role: user.role
-})
-);
-
-
-/****************************************************
- * REMEMBER EMAIL
- ****************************************************/
-
-if(
-document.getElementById("rememberMe").checked
-) {
-
-localStorage.setItem(
-"erpRememberEmail",
-email
-);
-
-}
-
-
-/****************************************************
- * SUCCESS
- ****************************************************/
-
-showMessage(
-"Login successful. Opening dashboard...",
-true
-);
-
-document.getElementById("loginText").textContent =
-"Opening Dashboard...";
-
-
-setTimeout(function() {
-
-redirectUser(user.role);
-
-}, 700);
-
-});
-
-
-/****************************************************
- * REDIRECT
- ****************************************************/
-
-function redirectUser(role) {
-
-const pages = {
-
-Admin: "admin-dashboard.html",
-
-Faculty: "faculty-dashboard.html",
-
-Student: "student-dashboard.html",
-
-Parent: "parent-dashboard.html"
-
-};
-
-
-const page = pages[role];
-
-
-if(!page) {
-
-showMessage(
-"Dashboard for this role is not available.",
-false
-);
-
-return;
-
-}
-
-
-window.location.href = page;
-
-}
-
-
-/****************************************************
- * MESSAGE
- ****************************************************/
-
-function showMessage(text, success) {
-
-const box =
-document.getElementById("message");
-
-box.classList.remove("hidden");
-
-if(success) {
-
-box.className =
-"mb-4 p-3 rounded-lg text-sm bg-green-100 text-green-700";
-
-} else {
-
-box.className =
-"mb-4 p-3 rounded-lg text-sm bg-red-100 text-red-700";
-
-}
-
-box.textContent = text;
-
-}
-
-
-/****************************************************
- * FORGOT PASSWORD
- ****************************************************/
-
-function forgotPassword() {
-
-alert(
-"Password recovery will be connected later."
-);
-
-}
-
-
-/****************************************************
- * SUPPORT
- ****************************************************/
-
-function contactSupport() {
-
-alert(
-"IT Support module will be connected later."
-);
-
-}
-
-
-/****************************************************
- * REMEMBER EMAIL
- ****************************************************/
-
-window.addEventListener("DOMContentLoaded", function() {
-
-const savedEmail =
-localStorage.getItem("erpRememberEmail");
-
-if(savedEmail) {
-
-document.getElementById("email").value =
-savedEmail;
-
-document.getElementById("rememberMe").checked =
-true;
-
-}
-
-});
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzrVfI0BAVDvekitGIhKeSwpowTE9CD276IKa3KxAmrbn5_QSpZ6s5q36Zvvpi4VBvzMQ/exec"; // Paste your Google Apps Script URL here
+
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value; // e.g., "Admin", "Faculty", "Student", "Parent"
+
+    const loginBtn = document.getElementById("loginBtn");
+    if (loginBtn) loginBtn.disabled = true;
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "login",
+          email: email,
+          password: password,
+          role: role
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Save user session
+        sessionStorage.setItem("erp_user", JSON.stringify(result.user));
+
+        // Redirect based on role
+        if (role.toLowerCase() === "admin") {
+          window.location.href = "admin-dashboard.html";
+        } else if (role.toLowerCase() === "faculty" || role.toLowerCase() === "hod") {
+          window.location.href = "faculty-dashboard.html";
+        } else if (role.toLowerCase() === "parent" || role.toLowerCase() === "student") {
+          window.location.href = "parent-dashboard.html";
+        }
+      } else {
+        alert("Login failed: " + result.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server connection error.");
+    } finally {
+      if (loginBtn) loginBtn.disabled = false;
+    }
+  });
+</script>
 
 </script>
 
